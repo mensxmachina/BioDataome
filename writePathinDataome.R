@@ -1,4 +1,4 @@
-
+options(stringsAsFactors = F)
 path<-"//algonas.csd.uoc.gr/Public/Dataome/"
 
 
