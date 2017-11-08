@@ -3,11 +3,17 @@ library(doParallel)
 library(GEOquery)
 library(rentrez)
 options(stringsAsFactors = F)
-
+source('E:/Dropbox (MXM - UoC)/Documents/Data-Based IR/DBIR/src/GEO/controlSamples.R', echo=TRUE)
+source('E:/Dropbox (MXM - UoC)/Documents/Data-Based IR/DBIR/src/GEO/downloadPhenotypePlatform.R', echo=TRUE)
+source('E:/Dropbox (MXM - UoC)/Documents/Data-Based IR/DBIR/src/GEO/downloadPhenotype.R', echo=TRUE)
+source('E:/Dropbox (MXM - UoC)/Documents/Data-Based IR/DBIR/src/GEO/downloadRaw.R', echo=TRUE)
+source('E:/Dropbox (MXM - UoC)/Documents/Data-Based IR/DBIR/src/GEO/preprocessGEO.R', echo=TRUE)
+source('E:/Dropbox (MXM - UoC)/Documents/Data-Based IR/DBIR/src/GEO/compareDsetList.R', echo=TRUE)
 dataPath<-"//algonas.csd.uoc.gr/Public/Dataome/"
 tmpRAW<-"//algonas.csd.uoc.gr/Public/Dataome/tempRAW/"
 #list of GEO platforms currently curated in BioDataome
 #list of GEO platforms currently curated in BioDataome
+setwd("E:/Dropbox (MXM - UoC)/Documents/Data-Based IR/DBIR/")
 Platforms<-read.table("UsefulFiles/Platforms.txt", sep="\t", header=T)
 #find gene epxression microarry GEO platforms
 platforms<-Platforms$Technology[which(Platforms$Entity=="Gene expression" & Platforms$Type=="in situ oligonucleotide")]
@@ -45,7 +51,8 @@ for (i in 1:length(platforms)){
     controls<-controlSamples(phenos)
     phenos<-cbind(samples=samples,class=controls[match(samples,controls[,1]),2],phenos)
     #write annotation file in BioDataome
-    write.table(phenos, file=paste0(dataPath,species[i],"/",platforms[i],"/",toProcessIDs[j],"_Annot.csv"),
+    writePath<-paste0(dataPath,species[i],"/",platforms[i],"/",toProcessIDs[j])
+    write.table(phenos, file=paste0(writePath,"_Annot.csv"),
                 sep=",",row.names = F)
     #download raw files
     downloadRaw(toProcessIDs[j],tmpRAW)
@@ -60,25 +67,29 @@ for (i in 1:length(platforms)){
     file.remove(file.path(tmpRAW,toRemove))
     dataNorm<-preprocessGEO(tmpRAW,3)
     #save Rda file
-    save(dataNorm, file=paste0(dataPath,species[i],"/",platforms[i],"/",toProcessIDs[j],".Rda"))
+    save(dataNorm, file=paste0(writePath,".Rda"))
     #save .csv file
     d<-round(t(dataNorm), digits = 4)
     #create proper column for csv
     row.names(d)<-samples
     d<-cbind.data.frame(samples=samples,d)
     # write data in csv
-    write.table(d, file=paste0(dataPath,species[i],"/",platforms[i],"/",toProcessIDs[j],".csv"), 
+    write.table(d, file=paste0(writePath,".csv"), 
                 sep=",",row.names = F)
     #clear tmpRAW
     file.remove(dir(tmpRAW, full.names=TRUE)) 
-    
     #update index file
-    indFile<-read.table(paste0(dataPath,platforms[i],".txt"), sep="\t", header=T)
+    
+    #find any datasets that share samples 
+    x<-paste0(writePath,".Rda")
+    y<-paste0(dataPath,species[i],"/",platforms[i],"/",processedIDs,".Rda")
+    commonGSEs<-compareDsetList(x,y)
+    
+    #Annotate dset wiht Disease Ontology terms
     
     
     
     
     
-    
-  }
+    }
 }

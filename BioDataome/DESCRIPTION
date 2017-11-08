@@ -1,0 +1,10 @@
+Package: BioDataome
+Title: Functions used to preprocess datasets stored in BioDataome
+Version: 0.0.0.9000
+Authors@R: person("Kleanthi", "Lakiotaki", email = "kliolak@gmail.com", role = c("aut", "cre"))
+Description: BioDataome package contains all the functions used to download and preprocess gene expression and methylation 
+microarray data from Gene Expression Omnibus, as well as RNASeq data from recount.
+Depends: R (>= 3.4.2)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
