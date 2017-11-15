@@ -1,9 +1,17 @@
-#this function receives as input a GEO Series (GSE) id, i.e."GSE11761"
-#and a platform id i.e. GPL570 returns a data frame with the contents
-#of the series matrix downloaded from GEO.
+#' Download series matrices from GEO for a given study and platform
+#'
+#' This function downloads the series matrices related to a given GEO Series (GSE)
+#' for the given platform
+#'
+#' @param x a GEO Series id (GSE)
+#' @param y a GEO platform id (GPL)
+#' @return a data frame with the contents of the series matrix
+#' @examples
+#' downloadPhenotypePlatform("GSE11761","GPL570")
+#' @export
 
 downloadPhenotypePlatform<-function(x,y){
-  
+
   phenos <- downloadPhenotype(x)
   if (length(phenos)>1){
     series_ind<-c()
@@ -13,6 +21,6 @@ downloadPhenotypePlatform<-function(x,y){
     phenos<- pData(phenos[[which(series_ind>0)]])
   } else {
     phenos<- pData(phenos[[1]])
-  } 
+  }
   return(phenos)
 }

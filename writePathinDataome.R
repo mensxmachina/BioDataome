@@ -7,8 +7,8 @@ files<-list.files(path,pattern = ".txt",full.names = T)
 
 for (i in 1:length(files)){
   f<-read.table(files[i],sep="\t", header=T)
-  test<-paste0("data/",f$Species,"/",f$Technology,"/",f$GSE,".csv")
-  f2<-cbind(f,path=test)
+  test<-paste0("data/",f$Species,"/",f$Technology,"/",f$GSE,"_Annot.csv")
+  f2<-cbind(f,Annot=test)
   #f2<-f2[,1:11]
   #f2$Dublicates<-""
   platform<-unique(f$Technology)

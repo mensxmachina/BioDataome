@@ -1,13 +1,22 @@
-#this function receives as input a GEO Series (GSE) id, i.e."GSE11761"
-#and returns a list with all series matrices. The same GSE may be linked 
-#to more than one platforms (i.e GPL570 and GPL1261). 
-#The size of the output list is the number of the measuring platforms. 
+#' Download series matrices from GEO for a given study
+#'
+#' This function downlads all series matrices related to a given GEO Series (GSE)
+#' and saves them in a list.
+#' The same GSE study may be related  to more than one platforms (i.e GPL570 and GPL1261).
+#' The length of the output list is the number of the related platforms.
+#'
+#' @param x a GEO Series id (GSE)
+#' @return a list of series matrices related to the given study
+#' @examples
+#' downloadRaw("GSE11761")
+#' @export
+#' @importFrom GEOquery getGEO
 
 downloadPhenotype <- function(x) {
   phenotype <- NULL
   a <- TRUE
   while(a) {
-    phenotype <- try(getGEO(x, GSEMatrix=TRUE))
+    phenotype <- try(GEOquery::getGEO(x, GSEMatrix=TRUE))
     if(!inherits(phenotype,"try-error")) a <- FALSE
     else cat("NCBI was busy, trying again\n")
   }

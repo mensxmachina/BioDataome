@@ -4,10 +4,12 @@
 \alias{downloadRaw}
 \title{Download raw CEL files from GEO for a given study}
 \usage{
-downloadRaw(x)
+downloadRaw(x, y)
 }
 \arguments{
-\item{x}{a GEO Series (GSE)}
+\item{x}{a GEO Series id (GSE)}
+
+\item{y}{the path to save the downloaded files}
 }
 \value{
 a directory with the GSE with the compressed RAW files
