@@ -11,6 +11,11 @@
 #' @export
 
 GSEtoDiseaseGEO<-function(GSE){
+  if (missing(GSE))
+    stop("Need to specify a GEO Series id, i.e 'GSE10026'")
+  if (!grepl("GSE[0-9]+",GSE))
+    stop("GSE must be a GEO Series id, i.e 'GSE10026'")
+
   #unlist all gses per disease
   tt<-strsplit(BioDataome:::diseasesLevel$GSEs,";")
   #isolate numerical part of GSE code
@@ -34,7 +39,7 @@ GSEtoDiseaseGEO<-function(GSE){
       if (length(which(!is.na(leaf)))==1){
         diseases<-diseases[which(!is.na(leaf))]
       } else if (length(which(!is.na(leaf)))>1){
-        #if we have more than one leafs find parent categories of all entiites
+        #if we have more than one leaves find parent categories of all entiites
         #and keep the leaf that belongs to the most common category
         aa<-BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
         commonCategory<-names(table(aa)[which(table(aa)==max(table(aa)))])

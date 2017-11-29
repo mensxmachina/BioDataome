@@ -10,6 +10,9 @@
 
 
 recountIDtoGSE<-function(x){
+  if (missing(x))
+    stop("Need to specify valid accession id, i.e 'SRP032775'")
+
   term<-paste0("Homo sapiens[ORGN] AND gpl11154[ACCN] AND ",x,"[All Fields]")
   r_search <- rentrez::entrez_search(db="gds", term=term,retmax =10000, use_history=TRUE)
   idd<-r_search$ids

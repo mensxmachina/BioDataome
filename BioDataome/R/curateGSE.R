@@ -1,21 +1,35 @@
 #' Run all steps to download, preprocess and annotate a GEO dataset
 #'
-#' Given a GSE id this function downloads, preprocesses, annotates a study and also creates the metadata. It saves two files,
-#' the data file and the GEO metadata file in the given path.
-#' @param x a GSE series ID
-#' @param y a GEO platform id (GPL)
-#' @param z the path to write the output
-#' @return writes in the given path two data frames, the preprocessed data and the metadata file with phenotype information
+#' Given a GSE id this function downloads, preprocesses, annotates a study and also creates the sample phenotype metadata.
 
+#' @param x a GSE series ID
+#' @param y a GEO technology id (GPL)
+#' @param z the path to save the downloaded files. By default this value is set to the working directory.
+#' @return a list with three components:
+#' \itemize{
+#'  \item{"metadata"}{a data frame of the metadata with sample phenotype information}
+#'  \item{"dataNorm"}{a numeric matrix of the preprocessed data with variables (probes) as rows and samples as columns}
+#' }
 #' @examples
 #' curateGSE("GSE11761","GPL570",getwd())
 #' @importFrom GEOquery gunzip
 #' @export
 
-curateGSE<-function(x,y,z){
+curateGSE<-function(x,y,z=getwd(), keepRaw=FALSE){
+  #platforms currenty curated in BioDataome
+  platforms<-BioDataome:::platformInfo$Technology
+
+  if (missing(x))
+    stop("Need to specify a GEO Series id, i.e 'GSE10026'")
+  if (missing(y))
+    stop("Need to specify a GEO technology i.e. 'GPL570'")
+  if (!grepl("GSE[0-9]+",x))
+    stop("x must be a GEO Series id, i.e 'GSE10026'")
+  if (!any(grepl(y, platforms, ignore.case=TRUE)))
+    stop("y must be one of the technologies: 'GPL570', 'GPL96', 'GPL6244', 'GPL1261','GPL13534'")
+
   #download and curate phenotype metadata
   metadata<-GSEmetadata(x,y)
-  save(metadata, file=paste0(z,"/",x,"_Annot.Rda"))
   #download raw files
   downloadRaw(x,z)
   untar(file.path(z,x,paste0(x,"_RAW.tar")), exdir = file.path(z,x))
@@ -68,8 +82,12 @@ curateGSE<-function(x,y,z){
 
   }
 
-  #save Rda file
-  save(dataNorm, file=paste0(z,"/",x,".Rda"))
-  #remove directory with cel files
-  file.remove(dir(file.path(z,x), full.names=TRUE))
+  #remove directory with raw files unless the user specifies keepRaw=TRUE
+  if (keepRaw==FALSE){
+    file.remove(dir(file.path(z,x), full.names=TRUE))
+  }
+
+  curatedGSE<-list(metadata=metadata,dataNorm=dataNorm)
+  return(curatedGSE)
+
 }

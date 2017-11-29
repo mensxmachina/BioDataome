@@ -9,11 +9,28 @@
 #' Let us assume we want to compare two normalized gene expression datasets from the same platform
 #' d1<-get(load(url("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86013.Rda")))
 #' d2<-get(load(url("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86015.Rda")))
+#' commons<-compareDsets(d1,d2)
 #' @export
 #' @importFrom Rfast mat.mat
 
 compareDsets<-function(d1,d2){
-  a<-mat.mat(d1,d2)
+
+  if (missing(d1))
+    stop("Need to specify a numeric matrix'")
+
+  if (missing(d2))
+    stop("Need to specify a numeric matrix'")
+
+  if (!is.numeric(d1))
+    stop("input matrix must be numeric")
+
+  if (!is.numeric(d2))
+  stop("input matrix must be numeric")
+
+  if (nrow(d1)!=nrow(d2))
+    stop("input matrices must have the same number of rows")
+
+  a<-Rfast::mat.mat(d1,d2)
   b<-which(a==1)
   return(length(b))
 }

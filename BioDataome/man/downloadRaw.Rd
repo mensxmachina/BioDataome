@@ -2,21 +2,25 @@
 % Please edit documentation in R/downloadRaw.R
 \name{downloadRaw}
 \alias{downloadRaw}
-\title{Download raw CEL files from GEO for a given study}
+\title{Download raw files from GEO for a given study}
 \usage{
-downloadRaw(x, y)
+downloadRaw(x, y = getwd())
 }
 \arguments{
 \item{x}{a GEO Series id (GSE)}
 
-\item{y}{the path to save the downloaded files}
+\item{y}{the path to save the downloaded files. By default this value is set to the working directory}
 }
 \value{
-a directory with the GSE with the compressed RAW files
+downloadRaw creates a directory in the given path with the GSE name and saves there the compressed RAW files.
 }
 \description{
-Download raw CEL files from GEO for a given study
+Download raw files from GEO for a given study
 }
 \examples{
-downloadRaw("GSE11761")
+
+Download the raw files of GSE11761 study and save them in a directory named GSE11761 in the working directory
+
+downloadRaw("GSE11761",getwd())
+
 }

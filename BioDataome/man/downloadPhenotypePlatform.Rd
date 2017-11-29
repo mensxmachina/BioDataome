@@ -2,7 +2,7 @@
 % Please edit documentation in R/downloadPhenotypePlatform.R
 \name{downloadPhenotypePlatform}
 \alias{downloadPhenotypePlatform}
-\title{Download series matrices from GEO for a given study and platform}
+\title{Download series matrix from GEO for a given study and platform}
 \usage{
 downloadPhenotypePlatform(x, y)
 }
@@ -12,11 +12,10 @@ downloadPhenotypePlatform(x, y)
 \item{y}{a GEO platform id (GPL)}
 }
 \value{
-a data frame with the contents of the series matrix
+a data frame with the contents of the series matrix found in GEO
 }
 \description{
-This function downloads the series matrices related to a given GEO Series (GSE)
-for the given platform
+This function downloads returns the series matrix related to a given GEO Series (GSE)
 }
 \examples{
 downloadPhenotypePlatform("GSE11761","GPL570")

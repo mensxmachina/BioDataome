@@ -1,13 +1,28 @@
 ---
-title: "Download, preprocess and annotate biological data sets using BioDataome"
-author: "Kleanthi Lakiotaki"
+title: "Download, preprocess, annotate and analyze omics data sets"
+author:
+- name: "Kleanthi Lakiotaki"
+  affiliation: 
+  - Computer Science Department, Univeristy of Crete
+  email: kliolak@gmail.com
+package: BioDataome
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+abstract: >
+  This vignette provides a task-oriented description of BioDataome package, examples of user interaction with BioDataome and some examples of analysing BioDataome datasets. [BioDataome](http://dataome.mensxmachina.org/) is a collection of uniformly preprocessed and automatically annotated datasets for data-driven biology. The processed data can be accessed via the [BioDataome](http://dataome.mensxmachina.org/) website in .csv format and the BioDataome package via github. BioDataome package contains all the functions used to download, preprocess and annotate gene expression and methylation microarray data from Gene Expression Omnibus, as well as RNASeq data from [recount](https://jhubiostatistics.shinyapps.io/recount/).
+toc: true
+output:
+  BiocStyle::html_document2:
+    toc_float: true
 vignette: >
-  %\VignetteIndexEntry{Download, preprocess and annotate biological data sets using BioDataome}
+  %\VignetteIndexEntry{Download, preprocess, annotate and analyze omics data sets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+```
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -16,50 +31,316 @@ knitr::opts_chunk$set(
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+#Getting started
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+BioDataome package is on GitHub. To install an R package from GitHub you first need to install the devtools package.
 
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r}
+#install.packages("devtools")
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+and then load devtools package.
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+```{r, results= "hide"}
+library(devtools)
+```
+ 
+To install BioDataome package, type:
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r}
+#install_github("mensxmachina/DBIR", subdir="BioDataome")
 ```
 
-Also a quote using `>`:
+To load BioDataome package, type:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r, warning=FALSE,message=FALSE}
+library(BioDataome)
+```
+##$\color{red}{Important \quad Note}$
+
+[BioDataome](http://dataome.mensxmachina.org/) website and BioDataome package currently curate datasets from five different microarray gene expression technologies (**GPL570**, **GPL96**, **GPL6244** and **GPL1261**), the **GPL13534** Human Methylation BeadChip from [GEO](https://www.ncbi.nlm.nih.gov/geo/) and  the **GPL11154** high-throughput sequencing technology from recount. Therefore, all functions that take as an input argument a technology id, work only with one of the above technology ids.
+
+
+# Download, preprocess, annotate and analyze omics data sets for BioDataome
+
+In [BioDataome](http://dataome.mensxmachina.org/) we have downloaded, preprocessed and annotated several thousands of omics data. All raw data have been retreived from [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/) and [recount](https://jhubiostatistics.shinyapps.io/recount/). Here we provide a workflow of all the steps we followed to download, preprocess and annotate data for BioDataome either from [GEO](https://www.ncbi.nlm.nih.gov/geo/) or from [recount](https://jhubiostatistics.shinyapps.io/recount/).
+
+## Download multiple BioDataome datasets matching a query
+
+In [BioDataome](http://dataome.mensxmachina.org/) users may select certain criteria from the drop-down lists and form a comlex query. For example users may be interested in downloading all parkinson's disease datasets of the GPL570 platform. When users selects parkinson's disease from the disease drop-down menu and GPL570 from the technology drop-down menu, BioDataome datasets are filtered out to match these criteria and a list with all the metadata related to the results of their query is formed. Subsequently, users may click on the download button to download the list, that includes a download link for each dataset.
+
+```{r}
+#Download the filtered list matching specific criteria
+
+metadata<-read.csv(file="E:/Dropbox (MXM - UoC)/Documents/Data-Based IR/DBIR/BioDataome/metadata.csv", sep=",", header=TRUE, stringsAsFactors = F)
+
+#Let's filter out further the results by selecting datasets with sample size greater or equal to 25 and those with no common samples to any other dataset.
+subsetDsets<-metadata[which( (metadata$samples>=25) & (metadata$duplicates==" ") ),]
+
+dataList<-lapply(subsetDsets$file,read.csv)
+
+#first five rows and columns of the data
+dataList[[1]][1:5,1:5]
+```
+
+
+
+
+## Download, preprocess and annotate GEO datasets
+
+In BioDataome package `curateGSE` function runs all necessary steps to download and preprocess a dataset from GEO. It returns a list, the first element of which is the sample phenotype metadata and the second the preprocessed data. `curateGSE` function is build upon several other BioDataome functions. First, it calls `GSEmetadata` for creating the sample phenotype metadata, including the output of the `controlSamples`, which discovers which samples are possibly used as controls, and then calls `downloadRaw` to download all raw data. Subsequently, depending on the user specified techology (whether the user designated one of the gene expression technologies curated by BioDataome or the methylation technology) `curateGSE` calls `preprocessGEO` or `preprocessGEOMethylation` respectively, to create a numeric matrix of the preprocessed data. Keep in mind that preprocessing CEL files takes a long time, even for small datasets. 
+
+```{r,eval=FALSE, warning=FALSE}
+#curate dataset GSE10026 measured with technology GPL570.
+
+GSE10026<-curateGSE("GSE10026","GPL570",getwd())
+
+#first five rows and columns of the metadata
+GSE10026[[1]][1:5,1:5]
+
+#first five rows and columns of the preprocessed data
+GSE10026[[2]][1:5,1:5]
+
+```
+
+## Download, preprocess and annotate recount RNASeq datasets
+
+In BioDataome package `curateRecountRNASeq` function runs all necessary steps to download and preprocess a dataset from recount. It returns a list, the first element of which is the sample phenotype metadata and the second the preprocessed data. 
+
+```{r,eval=FALSE, warning=FALSE}
+#curate dataset SRP032775.
+
+SRP032775<-curateRecountRNASeq("SRP032775",getwd())
+
+#first five rows and columns of the metadata
+SRP032775[[1]][1:5,1:5]
+
+#first five rows and columns of the preprocessed data
+SRP032775[[2]][1:5,1:5]
+```
+
+In RNASeq data we often end up with variables of zero variance across samples, as a result of zero counts in all samples. In most types of analysis, especially differential gene expression, one approach is to exclude genes with zero counts in all the replicates and conditions from the analysis, considering that they are obviously not expressed, (http://homer.salk.edu/homer/basicTutorial/rnaseqR.html). Also, for downstream analysis, it is typical to filter genes with a total read count smaller than a given threshold in any of the experimental conditions. In either way, non-zero variance of gene counts across samples is guaranteed.In BioDataome however, we are preparing datasets for further downstream and meta-analysis, thus a common variable set must be ensured. We followed the same preprocessing pipeline on all downloaded datasets and we show here all the steps that we followed, as well as their effect on the data. To visualize this effect we followed the steps proposed in: (http://www-huber.embl.de/users/klaus/Teaching/DESeq2Predoc2014.html)
+
+Recount provides the coverage counts instead of typical read count matrices. The coverage counts for each disjoint exon are the sum of the base-pair coverage. The gene coverage count is the sum of the disjoint exons coverage counts. The recount function `scale_counts()` computes the scaled read counts for a target library size of 40 million reads and we use this in our preprocessing pipeline, as proposed in [recount quick start guide](http://bioconductor.org/packages/devel/bioc/vignettes/recount/inst/doc/recount-quickstart.html). We also estimate size factors to account for differences in sequencing depth and use the `varianceStabilizingTransformation` to account for heteroscedasticity, as indicated in [RNA-seq gene-level analysis](http://genomicsclass.github.io/book/pages/rnaseq_gene_level.html#foot).
+
+```{r}
+#download dataset SRP050971
+
+downloadRecount("SRP050971")
+load(file.path("SRP050971", 'rse_gene.Rdata'))
+# Scale counts by taking into account the total coverage per sample
+rse <- recount::scale_counts(rse_gene)
+#access count matrix
+data<-SummarizedExperiment::assay(rse)
+#access phenotype information
+pheno<-SummarizedExperiment::colData(rse)
+#construct a DESeqDataSet object for further analysis
+dds<-DESeq2::DESeqDataSetFromMatrix(data,pheno, ~ 1)
+#Estimate the size factors for the count data
+dds <- DESeq2::estimateSizeFactors(dds)
+```
+
+To assess the scaling effect, we plot the densities of counts for the different samples. We expect overlapping densities since most of the genes are affected by the experimental conditions.
+```{r, fig.height=5,fig.width=7}
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("geneplotter")
+library('geneplotter')
+
+multidensity(SummarizedExperiment::assay(dds),
+              xlab="mean counts", xlim=c(0, 1000),
+              ylab="Density", legend=F, main="")
+
+#account for heteroscedasticity
+vsd <- DESeq2::varianceStabilizingTransformation(dds, blind=FALSE)
+dataNorm<-SummarizedExperiment::assay(vsd)
+#show the effect of the variance stabilizing transformation, by plotting the first sample against the second
+lims <- c(-2, 20)
+plot(SummarizedExperiment::assay(dds)[,1:2],
+     pch=16, main="before VST")
+
+lims <- c(-2, 20)
+plot(dataNorm[,1:2],
+       pch=16, main="after VST")
+```
+
+To assess the overall similarity between samples we plot a heatmap of sample-to-sample distances using the transformed values.
+
+```{r, fig.height=5,fig.width=7}
+#install.packages("RColorBrewer")
+library(RColorBrewer)
+
+distsRL <- dist(t(dataNorm))
+mat <- as.matrix(distsRL)
+condition<-SummarizedExperiment::colData(vsd)$title
+condition<-strsplit(condition,"_")
+condition<-sapply(condition,"[[",2)
+
+rownames(mat) <-  condition
+colnames(mat) <-  SummarizedExperiment::colData(vsd)$sample
+
+hmcol <- colorRampPalette(brewer.pal(9, "Blues"))(255)
+#install.packages("pheatmap")
+library(pheatmap)
+pheatmap(mat,fontsize_row=8)
+```
+
+## Find datasets that share common samples
+
+To build [BioDataome](http://dataome.mensxmachina.org/) website we have also identified duplicate samples by comparing all pairwise combinations of the preprocessed datasets. For each dataset, we report all other datasets that share at least one common sample. In BioDataome package we included two functions, `compareDsets` and `compareDsetList` for a user to either compare two datasets to find if they share samples, or to compare one datasets of interest to a list of datasets.
+
+[BioDataome](http://dataome.mensxmachina.org/) website provides all data and metadata files in csv format for better data exchange. However, in BioDatome package a user can also load data in .rda format. For example, `compareDsets` and `compareDsetList` both accept either .csv or .rda files. In the following examples we demonstrate `compareDsets` with loading .rda files and `compareDsetList` with .csv file.
+
+```{r}
+#download two preprocessed datasets from BioDataome in .rda
+d1<-get(load(url("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86013.Rda")))
+d2<-get(load(url("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86015.Rda")))
+# compare two preprocessed datasets
+commons<-compareDsets(d1,d2)
+#Number of samples that d1 and d2 share
+commons
+```
+
+Since BioDataome datasets are large we use `fread` from package `data.table` to read .csv datasets faster. In contrast to `compareDsets`, `compareDsetList` accepts paths to data files instead of data matrices.
+
+```{r}
+#the path to GSE8601 dataset in BioDataome
+x<-"http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86013.csv"
+```
+
+Let's suppose we would like to compare GSE8601 to datasets GSE86015, GSE9008 and GSE9119. All datasets should have been measured with the same technology, i.e. GPL570.
+
+```{r}
+#create a character vector of the paths in BioDataome
+y<-c("GSE86015.csv","GSE9008.csv","GSE9119.csv")
+y<-paste0("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/",y)
+#find with which of the three datasets our dataset of interest shares samples
+commonGSEs<-compareDsetList(x,y)
+commonGSEs
+```
+
+## Annotate datasets with Disease-Ontology terms
+
+To annotate datasets hosted in BioDataome, we programmatically retrieve text-mined results from [PubTator](https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/PubTator/index.cgi?user=User571811421) through RESTful API. PubTator supports PubMed ID queries. When a datasets is not accompanied by its PubMed ID, we use `GSEtoDiseaseGEO`, function that is based on GEO queries consisting of dataset accession ID and all disease terms from the disease ontology (D-O).
+
+In most cases, either PubTator or `GSEtoDiseaseGEO` return a collection of disease terms for each dataset. In this case, we first map all disease terms to the disease ontology first children nodes, i.e. bacterial infectious disease, immune system disease, cancer, etc, and keep disease terms that belong to the most common node(s).
+
+To assign Disease-Ontology terms to a GEO study we call `GSEtoDisease` which implements the rationale described above. 
+
+```{r}
+#Assign Disease-Ontology terms to study "GSE10245"
+diseases<-GSEtoDisease("GSE10006")
+diseases
+```
+
+For the RNASeq datasets from the recount, we first map the accession ids found in recount to GEO accession ids.
+
+```{r}
+#Assign Disease-Ontology terms to study "SRP032775"
+gse<-recountIDtoGSE("SRP032775")
+diseases<-GSEtoDisease(gse)
+diseases
+```
+
+# Differential expression analysis	of	microarray	data
+
+One of the most common analysis of microarray data is differential gene expression analysis. Therefore, we show here an example of how an R user can exploit BioDataome to accelerate the analysis of a single dataset. Since BioDataome hosts already processed data, analysts can avoid all the time-consuming steps of downloading and preprocessing data and focus on their downlstream analysis. In this example we follow microarray analysis steps from the [Biomedical Data Science](http://genomicsclass.github.io/book/) course of Rafael Irizarry and Michael Love.
+
+
+```{r}
+#download GSE8671 preprocessed dataset from BioDataome in .rda
+d<-get(load(url("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE8671.Rda")))
+
+#download GSE8671 preprocessed dataset from BioDataome in .rda
+pheno<-get(load(url("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE8671_Annot.Rda")))
+#dimensions of dataset (rows: probes, columns:samples)
+dim(d)
+
+#install and load limma package
+
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("limma")
+library(limma)
+#Fit a linear model for each gene in the expression data given the design matrix specified in column class of the phenotype data
+fit <- lmFit(d, design=model.matrix(~ pheno$class))
+#calculate the differential expression by empirical Bayes shrinkage
+fit <- eBayes(fit)
+#A table with the top 10 most statistically significant differentially expressed genes between the groups sorted by adjusted p-value:
+tt <- topTable(fit, coef=2)
+
+#create a heatmap of those top 10 highly significant genes. 
+heatmap(d[match(rownames(tt),row.names(d)),], labCol = FALSE)
+
+#Find gene symbols of those top 10 highly significant genes.
+
+#install and load necessary packages
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("hgu133plus2.db")
+#biocLite("annotate")
+
+library("annotate")
+library('hgu133plus2.db')
+
+Symbol <- getSYMBOL(row.names(d), "hgu133plus2.db")
+#Find gene symbols for the top 10 differentially expressed genes 
+top10genes<-Symbol[match(rownames(tt),row.names(d))]
+top10genes
+```
+
+# Enrichment analysis
+
+To infer knowledge about the differentially expressed genes we perform enrichment analysis, namely we compare them to annotated gene sets representing prior biological knowledge. We use [Enrichr](http://amp.pharm.mssm.edu/Enrichr/) and the respective R package to check whether a differentially expressed input set of genes significantly overlaps with annotated gene sets. We choose Gene Ontology terms and Reactome and KEGG biological pathways as annotated gene set libraries for this example.
+
+```{r}
+
+#Perform enrichment analysis for the top 10 differentially expressed genes 
+
+#install and download enrichR package
+#install.packages("enrichR")
+library('enrichR')
+
+#select annotated gene set libraries
+dbs <- c("GO_Molecular_Function_2017", "GO_Cellular_Component_2017", "GO_Biological_Process_2017",
+         "Reactome_2016","KEGG_2016")
+#Perform enrichment analysis
+enriched <- enrichr(top10genes, dbs)
+
+#sort Gene Ontology molecular function terms by adjusted p-values
+GOMF<-enriched[[1]]$Term[order(enriched[[1]]$Adjusted.P.value)]
+#show top-5 
+head(GOMF, n=5)
+#sort genes by the number of Gene Ontology molecular function terms
+GeneMembershipGOMF<-sort(table(enriched[[1]]$Genes),decreasing = T)
+GeneMembershipGOMF
+
+#sort Gene Ontology cellular component terms by adjusted p-values
+GOCC<-enriched[[2]]$Term[order(enriched[[2]]$Adjusted.P.value)]
+#show top-5 
+head(GOCC, n=5)
+#sort genes by the number of Gene Ontology cellular component terms
+GeneMembershipCC<-sort(table(enriched[[2]]$Genes),decreasing = T)
+GeneMembershipCC
+
+#sort Gene Ontology biological process terms by adjusted p-values
+GOBC<-enriched[[3]]$Term[order(enriched[[3]]$Adjusted.P.value)]
+#show top-5 
+head(GOBC, n=5)
+#sort genes by the number of Gene Ontology biological process terms
+GeneMembershipBC<-sort(table(enriched[[2]]$Genes),decreasing = T)
+GeneMembershipBC
+
+#sort Reactome pathway terms by adjusted p-values
+Reactome<-enriched[[4]]$Term[order(enriched[[4]]$Adjusted.P.value)]
+#show top-5 
+head(Reactome, n=5)
+#sort genes by the number of Reactome pathway terms
+GeneMembershipReactome<-sort(table(enriched[[4]]$Genes),decreasing = T)
+GeneMembershipReactome
+
+#sort KEGG pathway terms by adjusted p-values
+KEGG<-enriched[[5]]$Term[order(enriched[[5]]$Adjusted.P.value)]
+#show top-5 
+head(KEGG,n=5)
+#sort genes by the number of GKEGG pathway terms
+GeneMembershipKEGG<-sort(table(enriched[[5]]$Genes),decreasing = T)
+GeneMembershipKEGG
+```

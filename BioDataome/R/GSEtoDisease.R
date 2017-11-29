@@ -14,25 +14,29 @@
 #' @importFrom XML xmlToList
 
 GSEtoDisease<-function(GSE){
+  if (missing(GSE))
+    stop("Need to specify a GEO Series id, i.e 'GSE10026'")
+  if (!grepl("GSE[0-9]+",GSE))
+    stop("GSE must be a GEO Series id, i.e 'GSE10026'")
 
   #unlist all gses per disease
   tt<-strsplit(BioDataome:::diseasesLevel$GSEs,";")
   #find Pubmed IDs for this GSE
   a<-paste0(GSE," [ACCN] AND gse[ETYP]")
   r_search<- entrez_search(db="gds", term=a,retmax =10000, use_history=TRUE)
-    if (r_search$count!=0){
-      b<-entrez_summary(db="gds", id=r_search$ids[1])
-      pubmed<-b$pubmedids
-      if (length(pubmed)!=0){
-        #use PubTator's API to annotate gse
-        diseases<-c()
-        for (j in 1:length(pubmed)){
-          uri<-paste("https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/RESTful/tmTool.cgi/Disease/",pubmed[j],"/BioC",sep="")
-          t<-getURL(uri)
+  if (r_search$count!=0){
+    b<-entrez_summary(db="gds", id=r_search$ids[1])
+    pubmed<-b$pubmedids
+    if (length(pubmed)!=0){
+      #use PubTator's API to annotate gse
+      diseases<-c()
+      for (j in 1:length(pubmed)){
+        uri<-paste("https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/RESTful/tmTool.cgi/Disease/",pubmed[j],"/BioC",sep="")
+        t<-getURL(uri)
 
-          if( !is.na(pmatch('[Error]', t)) ){
-            diseases<-NA
-          } else {
+        if( !is.na(pmatch('[Error]', t)) ){
+          diseases<-NA
+        } else {
           ll<-xmlToList(t)
           list1<-ll$document[[3]]
           if (length(list1)>3){
@@ -43,76 +47,76 @@ GSEtoDisease<-function(GSE){
             diseases<-c(diseases,tolower(d))
           }
 
-          }
         }
-        diseases<-unique(diseases)
-        #if PubTator returns an empty set
-        #try with GEO
-        if (length(diseases)==0){
-          diseases<-sapply(GSE,GSEtoDiseaseGEO)
-        } else {
-           #find all leafs
-          leaf<-c()
-          for (j in 1:length(diseases)){
-            leaf[j]<-match(tolower(diseases[j]),tolower(BioDataome:::leafs[,1]))
+      }
+      diseases<-unique(diseases)
+      #if PubTator returns an empty set
+      #try with GEO
+      if (length(diseases)==0){
+        diseases<-sapply(GSE,GSEtoDiseaseGEO)
+      } else {
+        #find all leafs
+        leaf<-c()
+        for (j in 1:length(diseases)){
+          leaf[j]<-match(tolower(diseases[j]),tolower(BioDataome:::leafs[,1]))
+        }
+        #if we have only one leaf keep that
+        if (length(which(!is.na(leaf)))==1){
+          diseases<-diseases[which(!is.na(leaf))]
+        } else if (length(which(!is.na(leaf)))>1){
+          #if we have more than one leafs find parent categories of all entiites
+          #and keep the leaf that belongs to the most common category
+          aa<-BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
+          commonCategory<-names(table(aa)[which(table(aa)==max(table(aa)))])
+          leafCats<-aa[which(!is.na(leaf))]
+          #which leafs belong to the most common category
+          leafsToKeep<-which(leafCats %in% commonCategory)
+          #if no leaf belong to the common category keep them all
+          if (length(leafsToKeep)==0){
+            diseases<-paste(diseases[which(!is.na(leaf))], sep=";", collapse=";")
+          } else {
+            diseases<-paste(diseases[match(leafCats[leafsToKeep],aa)], sep=";", collapse=";")
           }
-          #if we have only one leaf keep that
-          if (length(which(!is.na(leaf)))==1){
-            diseases<-diseases[which(!is.na(leaf))]
-          } else if (length(which(!is.na(leaf)))>1){
-            #if we have more than one leafs find parent categories of all entiites
-            #and keep the leaf that belongs to the most common category
+        } else {
+          #if we only have nodes
+          #find deepest nodes
+          depth<-c()
+          for (j in 1:length(diseases)){
+            depth[j]<-as.numeric(BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases[j]),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),3 ] )
+          }
+          #if we have more than one category with the same depth, keep the most representative as in leafs
+
+          bb<-which(depth==max(depth,na.rm = T))
+          if (length(bb)==0){
+            diseases<-sapply(GSE,GSEtoDiseaseGEO)
+          } else if (length(bb)==1){
+            diseases<-diseases[which(depth==max(depth,na.rm = T))]
+          } else {
             aa<-BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
             commonCategory<-names(table(aa)[which(table(aa)==max(table(aa)))])
-            leafCats<-aa[which(!is.na(leaf))]
-            #which leafs belong to the most common category
-            leafsToKeep<-which(leafCats %in% commonCategory)
-            #if no leaf belong to the common category keep them all
-            if (length(leafsToKeep)==0){
-              diseases<-paste(diseases[which(!is.na(leaf))], sep=";", collapse=";")
+            nodesToKeep<-which(aa[bb] %in% commonCategory)
+            if (length(nodesToKeep)==0){
+              diseasesALL[i]<-paste(diseases[bb], sep=";", collapse=";")
             } else {
-              diseases<-paste(diseases[match(leafCats[leafsToKeep],aa)], sep=";", collapse=";")
+              diseases<-paste(diseases[bb[nodesToKeep]], sep=";", collapse=";")
             }
-          } else {
-            #if we only have nodes
-            #find deepest nodes
-            depth<-c()
-            for (j in 1:length(diseases)){
-              depth[j]<-as.numeric(BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases[j]),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),3 ] )
-            }
-            #if we have more than one category with the same depth, keep the most representative as in leafs
-
-            bb<-which(depth==max(depth,na.rm = T))
-            if (length(bb)==0){
-              diseases<-sapply(GSE,GSEtoDiseaseGEO)
-            } else if (length(bb)==1){
-              diseases<-diseases[which(depth==max(depth,na.rm = T))]
-            } else {
-              aa<-BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
-              commonCategory<-names(table(aa)[which(table(aa)==max(table(aa)))])
-              nodesToKeep<-which(aa[bb] %in% commonCategory)
-              if (length(nodesToKeep)==0){
-                diseasesALL[i]<-paste(diseases[bb], sep=";", collapse=";")
-              } else {
-                diseases<-paste(diseases[bb[nodesToKeep]], sep=";", collapse=";")
-              }
-            }
-
           }
+
         }
+      }
 
-        if (is.na(diseases)){
-          diseases<-sapply(GSE,GSEtoDiseaseGEO)
-        }
-
-
-      } else {
+      if (is.na(diseases)){
         diseases<-sapply(GSE,GSEtoDiseaseGEO)
       }
 
+
     } else {
-      diseases<-NA
+      diseases<-sapply(GSE,GSEtoDiseaseGEO)
     }
+
+  } else {
+    diseases<-NA
+  }
 
   return(diseases)
 }

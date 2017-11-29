@@ -4,21 +4,24 @@
 \alias{curateGSE}
 \title{Run all steps to download, preprocess and annotate a GEO dataset}
 \usage{
-curateGSE(x, y, z)
+curateGSE(x, y, z = getwd(), keepRaw = FALSE)
 }
 \arguments{
 \item{x}{a GSE series ID}
 
-\item{y}{a GEO platform id (GPL)}
+\item{y}{a GEO technology id (GPL)}
 
-\item{z}{the path to write the output}
+\item{z}{the path to save the downloaded files. By default this value is set to the working directory.}
 }
 \value{
-writes in the given path two data frames, the preprocessed data and the metadata file with phenotype information
+a list with three components:
+\itemize{
+ \item{"metadata"}{a data frame of the metadata with sample phenotype information}
+ \item{"dataNorm"}{a numeric matrix of the preprocessed data with variables (probes) as rows and samples as columns}
+}
 }
 \description{
-Given a GSE id this function downloads, preprocesses, annotates a study and also creates the metadata. It saves two files,
-the data file and the GEO metadata file in the given path.
+Given a GSE id this function downloads, preprocesses, annotates a study and also creates the sample phenotype metadata.
 }
 \examples{
 curateGSE("GSE11761","GPL570",getwd())

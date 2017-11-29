@@ -13,8 +13,8 @@ controlSamples(d)
 a data frame of GEO sample ids (i.e. GSM60555) and their class.
 }
 \description{
-This function discovers control samples from the series matrix found in GEO
-It searches for specific keywords that are often used to denote controls, in specific columns of
+This function discovers control samples from the series matrix found in GEO.
+It searches for specific keywords that are often used to denote controls in specific columns of the
 series matrices.
 }
 \examples{

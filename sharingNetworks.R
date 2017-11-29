@@ -1,0 +1,141 @@
+options(stringsAsFactors = F)
+rm(list=ls())
+require(visNetwork, quietly = TRUE)
+library(igraph)
+
+#platform GPL570
+indexPath<-"//algonas.csd.uoc.gr/Public/Dataome/"
+
+platforms<-list.files(indexPath,"GPL[0-9]+.txt$", full.names = T)
+
+
+plats<-unlist(strsplit(list.files(indexPath,"GPL[0-9]+.txt$"),".txt"))
+col_vector<-c("#90ed7d","#f15c80" ,"#8085e9", "#f7a35c" ,"#7cb5ec","#2b908f","#e4d354","#662e49","#434348")
+
+categories<-c("infectious\nagent","anatomical\nentity",
+              "cellular\nproliferation","mental\nhealth",
+              "metabolism","genetic","physical\ndisorder","syndrome","unknown")  
+
+for (i in 1:length(platforms)){
+  
+  results<-read.table(platforms[i], sep="\t", header=T)
+  
+  #create nodes matrix
+  
+  nodes<-cbind(results$GSE,results$DOlevel2)
+  colnames(nodes) <- c("id", "group")
+  nodes<-as.data.frame(nodes,stringsAsFactors=F )
+  #create edges matrix
+  linksALL<-c()
+  #shareSizeALL<-c()
+  for (j in 1:nrow(results)){
+    if (!is.na(results$Dublicates[j]) & (results$Dublicates[j]!="")){
+      links<-unlist(strsplit(results$Dublicates[j],";"))
+      links<-cbind(rep(results$GSE[j],length(links)),links)
+      linksALL<-rbind(linksALL,links) 
+      #shareSize<-cbind(results$GSE[i],results$Disease[i],nrow(links))
+      # shareSizeALL<-rbind(shareSizeALL,shareSize)
+    }
+    
+    print(j)
+    
+  }
+  linksALL<-cbind(linksALL,1)
+  if (nrow(linksALL)>1){
+  colnames(linksALL) <- c("from", "to", "weight")
+
+  
+  linksALL<-as.data.frame(linksALL,stringsAsFactors=F )
+  
+  links.used<-linksALL[!duplicated(t(apply(linksALL, 1, sort))),]
+  
+  
+  nodes.used<-unique(c(linksALL$from,linksALL$to))
+  
+  nodes.used<-nodes[match(nodes.used,nodes$id),]
+  #nodes.used$label<-nodes.used$disease
+  nodes.used$group[which(nodes.used$group=="")]<-"unknown"
+  nodes.used$color.border <- "darkgrey"
+  nodes.used$color.highlight.background <- "orange"
+  nodes.used$color.highlight.border <- "darkred"
+  nodes.used$label<-nodes.used$id
+  #set colors
+  nodes.used$color.background<-NA
+  for (k in 1:length(categories)){
+    nodes.used$color.background[which(nodes.used$group==categories[k])]<-col_vector[k]  
+  }
+  
+  nodes.used$group[which(nodes.used$group=="disease by infectious agent")]="infectious\nagent"
+  nodes.used$group[which(nodes.used$group=="disease of anatomical entity")]="anatomical\nentity"
+  nodes.used$group[which(nodes.used$group=="disease of cellular proliferation")]="cellular\nproliferation"
+  nodes.used$group[which(nodes.used$group=="disease of mental health")]="mental\nhealth"
+  nodes.used$group[which(nodes.used$group=="disease of metabolism")]="metabolism"
+  nodes.used$group[which(nodes.used$group=="genetic disease")]="genetic"
+  nodes.used$group[which(nodes.used$group=="physical disorder")]="physical\ndisorder"
+ 
+  network <- visNetwork(nodes.used, links.used) %>%
+      visIgraphLayout(layout = "layout_nicely",type = "full",physics = TRUE) %>%
+    visOptions(selectedBy = "group",
+               highlightNearest = TRUE,
+               nodesIdSelection = TRUE) %>%
+    #visPhysics(stabilization = list(enabled = TRUE,fit = TRUE,iterations=50), minVelocity=2,solver = "forceAtlas2Based",
+     #          forceAtlas2Based = list(gravitationalConstant = -100, centralGravity=0.05))%>%
+    visPhysics(stabilization = list(enabled = FALSE,fit = TRUE), minVelocity=3,solver = "forceAtlas2Based",
+    forceAtlas2Based = list(gravitationalConstant = -100, centralGravity=0.05))%>%
+    visInteraction(navigationButtons = TRUE) %>%
+    visGroups(groupname = categories[1], color =col_vector[1], shape="dot",
+              font=list(align="left",size=14)) %>%
+    visGroups(groupname = categories[2], color =col_vector[2], shape="dot",
+              font=list(align="left",size=14)) %>%
+    visGroups(groupname = categories[3], color =col_vector[3], shape="dot",
+              font=list(align="left",size=14)) %>%
+    visGroups(groupname = categories[4], color =col_vector[4], shape="dot",
+              font=list(align="left",size=14)) %>%
+    visGroups(groupname = categories[5], color =col_vector[5], shape="dot",
+              font=list(align="left",size=14)) %>%
+    visGroups(groupname = categories[6], color =col_vector[6], shape="dot",
+              font=list(align="left",size=14)) %>%
+    visGroups(groupname = categories[7], color =col_vector[7], shape="dot",
+              font=list(align="left",size=14)) %>%
+    visGroups(groupname = categories[8], color =col_vector[8], shape="dot",
+              font=list(align="left",size=14)) %>%
+    visGroups(groupname = categories[9], color =col_vector[9], shape="dot",
+              font=list(align="left",size=14)) %>%
+   # visEvents(type = "once", startStabilizing = "function() { this.fit()}") %>%
+# visEvents(type = "once", startStabilizing = "function() {
+  #         this.moveTo({scale:0.1})}") %>%
+    #visLegend(main=list(text="disease type", style="font-size:18px;text-align:center;margin-bottom:10px;font-weight:bold;padding-top:20px;padding-bottom:20px"))
+    visLegend()
+  
+    network
+  
+  #dotGraph <- paste0('graph { ', 
+  #                           paste(
+  #                                 apply(links.used[,1:2],1,paste, collapse=" -- "),
+   #                            collapse='; '),
+  #                       ';}');
+  #nodesToWrite<-cbind("{\"id\":\"",nodes.used$id,"\",\"label\":\"",nodes.used$id,"\",\"group\":\"",nodes.used$group,"\"}")
+
+    
+    
+    
+    
+  #write.table(dotGraph,file=paste0(indexPath,plats[i],".dot"), row.names = F, col.names = F)
+  
+  #write.table(nodesToWrite,file=paste0(indexPath,plats[i],"Nodes.txt"), 
+   #           row.names = F, col.names = F,quote=F)
+  
+  visSave(network, file = paste0(indexPath,plats[i],".html"))
+  } 
+  
+}
+
+#write group categories and colors
+colcat<-cbind(categories,col_vector)
+
+write.table(colcat,file=paste0(indexPath,"groups.txt"), row.names = F, col.names = F,quote=F)
+
+
+
+
+

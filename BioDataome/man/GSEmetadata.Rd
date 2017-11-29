@@ -2,7 +2,7 @@
 % Please edit documentation in R/GSEmetadata.R
 \name{GSEmetadata}
 \alias{GSEmetadata}
-\title{Create metadata of a GEO dataset for BioDataome}
+\title{Create sample phenotype metadata of a GEO dataset including control discovery}
 \usage{
 GSEmetadata(x, y)
 }
@@ -16,7 +16,7 @@ a data frame of metadata with columns: sample IDs, Class and all other GEO pheno
 }
 \description{
 Given a GSE id this function downloads phenotype data from GEO for a specific study, discovers control samples
-and creates the metadata file for BioDataome
+and returns all sample phenotype metadata
 }
 \examples{
 metadata<-GSEmetadata("GSE11761","GPL570")

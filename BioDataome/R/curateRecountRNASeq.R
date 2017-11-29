@@ -4,15 +4,18 @@
 #' @param y the path to write the output
 #' @return writes in the given path two data frames, the preprocessed data and the metadata file with phenotype information
 #' @examples
-#' curateRecountRNASeq("SRP032775",getwd())
+#' curatedRecount<-curateRecountRNASeq("SRP032775",getwd())
 #' @export
 #' @importFrom recount scale_counts
 #' @importFrom DESeq2 DESeqDataSetFromMatrix varianceStabilizingTransformation estimateSizeFactors
 #' @importFrom SummarizedExperiment assay
 
 curateRecountRNASeq<-function(x,y){
-  #define geometric means function
-  gm_mean = function(x, na.rm=TRUE){  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))}
+  if (missing(x))
+    stop("Need to specify a recount accession id, i.e 'SRP032775'")
+  if ( (missing(y)) | (!file.exists(y)) )
+    stop("Need to specify a valid path, i.e getwd()")
+
   #download and load the data matrix
   downloadRecount(x)
   load(file.path(x, 'rse_gene.Rdata'))
@@ -24,20 +27,16 @@ curateRecountRNASeq<-function(x,y){
   pheno<-SummarizedExperiment::colData(rse)
   #construct a DESeqDataSet object for further analysis
   dds<-DESeq2::DESeqDataSetFromMatrix(data,pheno, ~ 1)
-  #find genometric mean for the count data
-  geoMeans = apply(SummarizedExperiment::assay(dds), 1, gm_mean)
   #Estimate the size factors for the count data
-  dds <- DESeq2::estimateSizeFactors(dds, geoMeans=geoMeans)
+  dds <- DESeq2::estimateSizeFactors(dds)
   #account for heteroscedasticity
   vsd <- DESeq2::varianceStabilizingTransformation(dds, blind=FALSE)
   #normalized data matrix
   dataNorm<-SummarizedExperiment::assay(vsd)
-  save(dataNorm, file=paste0(y,"/",x,".Rda"))
-
   samples<-colnames(dataNorm)
   gse<-recountIDtoGSE(x)
   if(!is.na(gse)){
-    metadata<-GSEmetadata(gse,"gpl11154")
+    metadata<-GSEmetadata(gse,"GPL11154")
     #match samples in data matrix
     sids<-match(pheno$geo_accession,metadata$samples)
     metadata<-metadata[sids,]
@@ -48,7 +47,8 @@ curateRecountRNASeq<-function(x,y){
     metadata<-cbind(samples=samples,class="unknown",metadata)
   }
 
-  save(metadata, file=paste0(y,"/",x,"_Annot.Rda"))
+  curatedRecount<-list(metadata=metadata,dataNorm=dataNorm)
 
+  return(curatedRecount)
 
 }

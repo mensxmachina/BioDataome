@@ -1,17 +1,28 @@
-#' Download series matrices from GEO for a given study and platform
+#' Download series matrix from GEO for a given study and platform
 #'
-#' This function downloads the series matrices related to a given GEO Series (GSE)
-#' for the given platform
+#' This function downloads returns the series matrix related to a given GEO Series (GSE)
 #'
 #' @param x a GEO Series id (GSE)
 #' @param y a GEO platform id (GPL)
-#' @return a data frame with the contents of the series matrix
+#' @return a data frame with the contents of the series matrix found in GEO
 #' @examples
 #' downloadPhenotypePlatform("GSE11761","GPL570")
 #' @export
 #' @importFrom Biobase pData
 
 downloadPhenotypePlatform<-function(x,y){
+  #platforms currenty curated in BioDataome
+  platforms<-BioDataome:::platformInfo$Technology
+
+  if (missing(x))
+    stop("Need to specify a GEO Series id, i.e 'GSE10026'")
+  if (missing(y))
+    stop("Need to specify a GEO technology i.e. 'GPL570'")
+  if (!grepl("GSE[0-9]+",x))
+    stop("x must be a GEO Series id, i.e 'GSE10026'")
+  if (!any(grepl(y, platforms, ignore.case=TRUE)))
+    stop("y must be one of the technologies: 'GPL570', 'GPL96', 'GPL6244', 'GPL1261','GPL13534'")
+
 
   phenos <- downloadPhenotype(x)
   if (length(phenos)>1){

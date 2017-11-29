@@ -2,7 +2,7 @@
 #'
 #' This function downlads all series matrices related to a given GEO Series (GSE)
 #' and saves them in a list.
-#' The same GSE study may be related  to more than one platforms (i.e GPL570 and GPL1261).
+#' The same GSE study (i.e. GSE11761) may be related  to more than one platforms (i.e GPL570 and GPL1261).
 #' The length of the output list is the number of the related platforms.
 #'
 #' @param x a GEO Series id (GSE)
@@ -13,6 +13,10 @@
 #' @importFrom GEOquery getGEO
 
 downloadPhenotype <- function(x) {
+   if (missing(x))
+    stop("Need to specify a GEO Series id, i.e 'GSE10026'")
+  if (!grepl("GSE[0-9]+",x))
+    stop("x must be a GEO Series id, i.e 'GSE10026'")
   phenotype <- NULL
   a <- TRUE
   while(a) {

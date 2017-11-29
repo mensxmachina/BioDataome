@@ -15,7 +15,7 @@ a list of series matrices related to the given study
 \description{
 This function downlads all series matrices related to a given GEO Series (GSE)
 and saves them in a list.
-The same GSE study may be related  to more than one platforms (i.e GPL570 and GPL1261).
+The same GSE study (i.e. GSE11761) may be related  to more than one platforms (i.e GPL570 and GPL1261).
 The length of the output list is the number of the related platforms.
 }
 \examples{

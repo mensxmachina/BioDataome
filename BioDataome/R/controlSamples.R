@@ -1,7 +1,7 @@
 #' Discover control samples from phenotype data in GEO
 #'
-#' This function discovers control samples from the series matrix found in GEO
-#' It searches for specific keywords that are often used to denote controls, in specific columns of
+#' This function discovers control samples from the series matrix found in GEO.
+#' It searches for specific keywords that are often used to denote controls in specific columns of the
 #' series matrices.
 #'
 #' @param d a data frame with the contents of series matrix

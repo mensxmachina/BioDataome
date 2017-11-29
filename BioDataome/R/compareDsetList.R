@@ -1,16 +1,20 @@
-#' Column wise comparison of a dataset to a list of datasets
-#' This function finds with which datasets of the list y, dataset x shares common samples. The datasets are in the form
+#' Column wise comparison of a dataset to a list of datasets.
+#'
+#' This function finds all datasets of the list y for which dataset x shares samples. The datasets are in the form
 #' variables (probes) x samples. The number of variables (probes) in both datasets should be the same.
 #'
 #' @param x the path to a normalized dataset x
 #' @param y a character vector of all paths to datasets to compare
 #' @return a character vector of all datasets for which dataset x shares at least one sample, separated by ;
 #' @examples
-#' Let us assume we want to compare normalized gene expression dataset GSE86013 with datasets GSE86015, GSE9008, GSE9119
-#' x and y can be either local paths where .Rda normalized data are stored or links to the csv files in BioDataome.
+#'
+#' Let us assume we want to compare normalized gene expression dataset GSE86013 with datasets:
+#' GSE86015, GSE9008, GSE9119. x and y can be either local paths where .Rda normalized data are stored
+#' or links to the csv files in BioDataome.
 #'
 #' First example runs with datasets stored in .csv in BioDataome.
 #' Since these datasets are large we propose to use fread from package data.table to read datasets faster
+#'
 #' install.packages("data.table")
 #' library("data.table")
 #' x<-"http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86013.csv"
@@ -18,11 +22,12 @@
 #' y<-paste0("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/",y)
 #' commonGSEs<-compareDsetList(x,y)
 #'
+#' @importFrom RCurl url.exists
 #' @export
 
 compareDsetList<-function(x,y){
   if (grep("http",x)==1) {
-    d1<-fread(x, sep=",", header=T,stringsAsFactors=FALSE)
+    d1<-data.table::fread(x, sep=",", header=T,stringsAsFactors=FALSE)
     d1<-t(d1[,2:ncol(d1)])
   } else {
     d1<-get(load(x))
@@ -30,7 +35,7 @@ compareDsetList<-function(x,y){
   t<-c()
   for (i in 1:length(y)){
     if (grep("http",y[i])==1) {
-      d2<-fread(y[i], sep=",", header=T,stringsAsFactors=FALSE)
+      d2<-data.table::fread(y[i], sep=",", header=T,stringsAsFactors=FALSE)
       d2<-t(d2[,2:ncol(d2)])
     } else {
       d2<-get(load(y[i]))
