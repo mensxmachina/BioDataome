@@ -1,7 +1,0 @@
-Species	Entity	Technology	Type
-Homo sapiens	DNA methylation	GPL13534	oligonucleotide beads
-Mus musculus	Gene expression	GPL1261	in situ oligonucleotide
-Homo sapiens	Gene expression	GPL570	in situ oligonucleotide
-Homo sapiens	Gene expression	GPL6244	in situ oligonucleotide
-Homo sapiens	Gene expression	GPL96	in situ oligonucleotide
-Homo sapiens	Gene expression	RNASeq	expression profiling by high throughput sequencing
