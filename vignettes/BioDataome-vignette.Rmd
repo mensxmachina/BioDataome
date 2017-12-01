@@ -94,7 +94,7 @@ In [BioDataome](http://dataome.mensxmachina.org/) we have downloaded, preprocess
 
 In BioDataome package `curateGSE` function runs all necessary steps to download and preprocess a dataset from GEO. It returns a list, the first element of which is the sample phenotype metadata and the second the preprocessed data. `curateGSE` function is build upon several other BioDataome functions. First, it calls `GSEmetadata` for creating the sample phenotype metadata, including the output of the `controlSamples`, which discovers which samples are possibly used as controls, and then calls `downloadRaw` to download all raw data. Subsequently, depending on the user specified techology (whether the user designated one of the gene expression technologies curated by BioDataome or the methylation technology) `curateGSE` calls `preprocessGEO` or `preprocessGEOMethylation` respectively, to create a numeric matrix of the preprocessed data. Keep in mind that preprocessing CEL files takes a long time, even for small datasets. 
 
-```{r, eval=FALSE}
+```{r, eval=FALSE,warning=FALSE, message=FALSE}
 #curate dataset GSE10026 measured with technology GPL570.
 
 GSE10026<-curateGSE("GSE10026","GPL570",getwd())
@@ -111,7 +111,7 @@ GSE10026[[2]][1:5,1:5]
 
 In BioDataome package `curateRecountRNASeq` function runs all necessary steps to download and preprocess a dataset from recount. It returns a list, the first element of which is the sample phenotype metadata and the second the preprocessed data. 
 
-```{r}
+```{r,warning=FALSE, message=FALSE}
 #curate dataset SRP032775.
 
 SRP032775<-curateRecountRNASeq("SRP032775",getwd())
@@ -127,7 +127,7 @@ In RNASeq data we often end up with variables of zero variance across samples, a
 
 Recount provides the coverage counts instead of typical read count matrices. The coverage counts for each disjoint exon are the sum of the base-pair coverage. The gene coverage count is the sum of the disjoint exons coverage counts. The recount function `scale_counts()` computes the scaled read counts for a target library size of 40 million reads and we use this in our preprocessing pipeline, as proposed in [recount quick start guide](http://bioconductor.org/packages/devel/bioc/vignettes/recount/inst/doc/recount-quickstart.html). We also estimate size factors to account for differences in sequencing depth and use the `varianceStabilizingTransformation` to account for heteroscedasticity, as indicated in [RNA-seq gene-level analysis](http://genomicsclass.github.io/book/pages/rnaseq_gene_level.html#foot).
 
-```{r}
+```{r,warning=FALSE, message=FALSE}
 #download dataset SRP050971
 
 downloadRecount("SRP050971")
