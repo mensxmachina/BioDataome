@@ -26,7 +26,7 @@
 #' @export
 
 compareDsetList<-function(x,y){
-  if (grep("http",x)==1) {
+  if (length(grep("http",x))!=0) {
     d1<-data.table::fread(x, sep=",", header=T,stringsAsFactors=FALSE)
     d1<-t(d1[,2:ncol(d1)])
   } else {
@@ -34,7 +34,7 @@ compareDsetList<-function(x,y){
   }
   t<-c()
   for (i in 1:length(y)){
-    if (grep("http",y[i])==1) {
+    if (length(grep("http",y[i]))!=0) {
       d2<-data.table::fread(y[i], sep=",", header=T,stringsAsFactors=FALSE)
       d2<-t(d2[,2:ncol(d2)])
     } else {
