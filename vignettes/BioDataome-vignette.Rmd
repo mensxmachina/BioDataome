@@ -72,15 +72,13 @@ In [BioDataome](http://dataome.mensxmachina.org/) users may select certain crite
 ```{r}
 #Download the filtered list matching specific criteria
 #If you downloaded the metadata csv file in your currect directory you can load it with the command:
-
 #metadata<-read.csv(file=file.path(getwd(),"metadata.csv"), sep=",", header=TRUE, stringsAsFactors = F)
 
-#If you have installed and loaded BioDataome package, and example metadata file can be loaded as:
+#If you have installed and loaded BioDataome package, an example metadata file can be loaded as:
 metadata<-BioDataome::metadata
-
 #Let's filter out further the results by selecting datasets with sample size greater or equal to 25 and those with no common samples with any other dataset.
 subsetDsets<-metadata[which( (metadata$samples>=25) & (metadata$duplicates==" ") ),]
-dataList<-lapply(subsetDsets$file,read.csv)
+dataList<-lapply(subsetDsets$dataset,read.csv)
 
 #first five rows and columns of the data
 dataList[[1]][1:5,1:5]
