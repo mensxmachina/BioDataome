@@ -3,8 +3,8 @@
 #' @param x a recount dataset ID
 #' @param y the path to write the output
 #' @return writes in the given path two data frames, the preprocessed data and the metadata file with phenotype information
-#' @examples
-#' curatedRecount<-curateRecountRNASeq("SRP032775",getwd())
+#' @examples \dontrun{
+#' curatedRecount<-curateRecountRNASeq("SRP032775",getwd()) }
 #' @export
 #' @importFrom recount scale_counts
 #' @importFrom DESeq2 DESeqDataSetFromMatrix varianceStabilizingTransformation estimateSizeFactors
@@ -13,12 +13,11 @@
 curateRecountRNASeq<-function(x,y){
   if (missing(x))
     stop("Need to specify a recount accession id, i.e 'SRP032775'")
-  if ( (missing(y)) | (!file.exists(y)) )
+  if ( (missing(y)) )
     stop("Need to specify a valid path, i.e getwd()")
-
   #download and load the data matrix
   downloadRecount(x)
-  load(file.path(x, 'rse_gene.Rdata'))
+  rse_gene<-get(load(file.path(x, 'rse_gene.Rdata')))
   # Scale counts by taking into account the total coverage per sample
   rse <- recount::scale_counts(rse_gene)
   #access count matrix

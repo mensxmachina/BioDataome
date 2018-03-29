@@ -18,6 +18,7 @@ It searches for specific keywords that are often used to denote controls in spec
 series matrices.
 }
 \examples{
+\dontrun{
 phenos<-downloadPhenotypePlatform("GSE11761","GPL570")
-controls<-controlSamples(phenos)
+controls<-controlSamples(phenos) }
 }

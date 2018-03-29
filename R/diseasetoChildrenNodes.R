@@ -4,11 +4,11 @@
 #'
 #' @param x a disease in D-O terms
 #' @return the first children node of x disease
-#' @examples
-#' DOChild<-diseasetoChildrenNodes("vesiculitis")
+#' @examples \dontrun{
+#' DOChild<-diseasetoChildrenNodes("vesiculitis") }
 #' @export
 
 diseasetoChildrenNodes<-function(x){
-  DOChild<-BioDataome:::diseaseSubCategoryALLU[match(tolower(x),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
+  DOChild<-diseaseSubCategoryALLU[match(tolower(x),tolower(diseaseSubCategoryALLU[,1])),4]
   return(DOChild)
 }

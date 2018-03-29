@@ -5,19 +5,21 @@
 #' @param x a GSE series ID
 #' @param y a GEO technology id (GPL)
 #' @param z the path to save the downloaded files. By default this value is set to the working directory.
+#' @param keepRaw keep or not the raw CEL files. By default curateGSE does not keep the raw CEL files.
 #' @return a list with three components:
 #' \itemize{
 #'  \item{"metadata"}{a data frame of the metadata with sample phenotype information}
 #'  \item{"dataNorm"}{a numeric matrix of the preprocessed data with variables (probes) as rows and samples as columns}
 #' }
-#' @examples
-#' curateGSE("GSE11761","GPL570",getwd())
+#' @examples \dontrun{
+#' curateGSE("GSE11761","GPL570",getwd()) }
 #' @importFrom GEOquery gunzip
+#' @importFrom utils untar
 #' @export
 
 curateGSE<-function(x,y,z=getwd(), keepRaw=FALSE){
   #platforms currenty curated in BioDataome
-  platforms<-BioDataome:::platformInfo$Technology
+  platforms<-platformInfo$Technology
 
   if (missing(x))
     stop("Need to specify a GEO Series id, i.e 'GSE10026'")
@@ -32,7 +34,7 @@ curateGSE<-function(x,y,z=getwd(), keepRaw=FALSE){
   metadata<-GSEmetadata(x,y)
   #download raw files
   downloadRaw(x,z)
-  untar(file.path(z,x,paste0(x,"_RAW.tar")), exdir = file.path(z,x))
+  utils::untar(file.path(z,x,paste0(x,"_RAW.tar")), exdir = file.path(z,x))
   #remove compressed file
   file.remove(file.path(z,x,paste0(x,"_RAW.tar")))
   #by default downloadRaw will download all files for the specific GSE
@@ -41,8 +43,8 @@ curateGSE<-function(x,y,z=getwd(), keepRaw=FALSE){
   #list and preprocess idat files. Else list and preprocess CEL files
 
   if (y=="GPL13534"){
-    idatFiles <- list.files(file.path(z,x), pattern = "idat.gz$", full = TRUE)
-    sapply(idatFiles, gunzip, overwrite = TRUE)
+    idatFiles <- list.files(file.path(z,x), pattern = "idat.gz$", full.names = TRUE)
+    sapply(idatFiles, GEOquery::gunzip, overwrite = TRUE)
     idatFiles2 <- list.files(file.path(z,x), pattern = "idat$",include.dirs = FALSE)
     #keep only samples found in phenos
     idatKeep<-c()

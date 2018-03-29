@@ -17,21 +17,18 @@ a character vector of all datasets for which dataset x shares at least one sampl
 \description{
 This function finds all datasets of the list y for which dataset x shares samples. The datasets are in the form
 variables (probes) x samples. The number of variables (probes) in both datasets should be the same.
-}
-\examples{
-
 Let us assume we want to compare normalized gene expression dataset GSE86013 with datasets:
 GSE86015, GSE9008, GSE9119. x and y can be either local paths where .Rda normalized data are stored
 or links to the csv files in BioDataome.
-
 First example runs with datasets stored in .csv in BioDataome.
 Since these datasets are large we propose to use fread from package data.table to read datasets faster
-
+}
+\examples{
+\dontrun{
 install.packages("data.table")
 library("data.table")
 x<-"http://dataome.mensxmachina.org/data/Homo\%20sapiens/GPL570/GSE86013.csv"
 y<-c("GSE86015.csv","GSE9008.csv","GSE9119.csv")
 y<-paste0("http://dataome.mensxmachina.org/data/Homo\%20sapiens/GPL570/",y)
-commonGSEs<-compareDsetList(x,y)
-
+commonGSEs<-compareDsetList(x,y) }
 }

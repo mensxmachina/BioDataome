@@ -1,13 +1,12 @@
 #' Download raw files from GEO for a given study
+#' Example: Download the raw files of GSE11761 study and save them in a
+#' directory named GSE11761 in the working directory
 #'
 #' @param x a GEO Series id (GSE)
 #' @param y the path to save the downloaded files. By default this value is set to the working directory
 #' @return  downloadRaw creates a directory in the given path with the GSE name and saves there the compressed RAW files.
-#' @examples
-#'
-#' Download the raw files of GSE11761 study and save them in a directory named GSE11761 in the working directory
-#'
-#' downloadRaw("GSE11761",getwd())
+#' @examples \dontrun{
+#' downloadRaw("GSE11761",getwd()) }
 #'
 #' @export
 #' @importFrom GEOquery getGEOSuppFiles

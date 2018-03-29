@@ -19,5 +19,6 @@ The same GSE study (i.e. GSE11761) may be related  to more than one platforms (i
 The length of the output list is the number of the related platforms.
 }
 \examples{
-downloadPhenotype("GSE11761")
+\dontrun{
+downloadPhenotype("GSE11761") }
 }

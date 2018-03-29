@@ -2,7 +2,9 @@
 % Please edit documentation in R/downloadRaw.R
 \name{downloadRaw}
 \alias{downloadRaw}
-\title{Download raw files from GEO for a given study}
+\title{Download raw files from GEO for a given study
+Example: Download the raw files of GSE11761 study and save them in a
+directory named GSE11761 in the working directory}
 \usage{
 downloadRaw(x, y = getwd())
 }
@@ -16,11 +18,11 @@ downloadRaw creates a directory in the given path with the GSE name and saves th
 }
 \description{
 Download raw files from GEO for a given study
+Example: Download the raw files of GSE11761 study and save them in a
+directory named GSE11761 in the working directory
 }
 \examples{
-
-Download the raw files of GSE11761 study and save them in a directory named GSE11761 in the working directory
-
-downloadRaw("GSE11761",getwd())
+\dontrun{
+downloadRaw("GSE11761",getwd()) }
 
 }

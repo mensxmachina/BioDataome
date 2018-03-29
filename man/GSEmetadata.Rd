@@ -19,5 +19,6 @@ Given a GSE id this function downloads phenotype data from GEO for a specific st
 and returns all sample phenotype metadata
 }
 \examples{
-metadata<-GSEmetadata("GSE11761","GPL570")
+\dontrun{
+metadata<-GSEmetadata("GSE11761","GPL570") }
 }

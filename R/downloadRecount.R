@@ -4,10 +4,9 @@
 #' from Recount (https://jhubiostatistics.shinyapps.io/recount/)
 #'
 #' @param x a recount dataset ID
-#' @param y the destination path for the downloaded RangedSummarizedExperiment object
 #' @return RangedSummarizedExperiment object for the given study
-#' @examples
-#' downloadRecount("SRP032775",getwd())
+#' @examples \dontrun{
+#' downloadRecount("SRP032775",getwd()) }
 #' @export
 #' @importFrom recount download_study
 

@@ -6,8 +6,8 @@
 #'
 #' @param GSE a GSE series ID
 #' @return a character vector of all related diseases, separated by ;
-#' @examples
-#' diseases<-GSEtoDisease("GSE10245")
+#' @examples \dontrun{
+#' diseases<-GSEtoDisease("GSE10245") }
 #' @export
 #' @importFrom rentrez entrez_search
 #' @importFrom RCurl getURL
@@ -20,10 +20,10 @@ GSEtoDisease<-function(GSE){
     stop("GSE must be a GEO Series id, i.e 'GSE10026'")
 
   #unlist all gses per disease
-  tt<-strsplit(BioDataome:::diseasesLevel$GSEs,";")
+  tt<-strsplit(diseasesLevel$GSEs,";")
   #find Pubmed IDs for this GSE
   a<-paste0(GSE," [ACCN] AND gse[ETYP]")
-  r_search<- entrez_search(db="gds", term=a,retmax =10000, use_history=TRUE)
+  r_search<- rentrez::entrez_search(db="gds", term=a,retmax =10000, use_history=TRUE)
   if (r_search$count!=0){
     b<-entrez_summary(db="gds", id=r_search$ids[1])
     pubmed<-b$pubmedids
@@ -32,12 +32,12 @@ GSEtoDisease<-function(GSE){
       diseases<-c()
       for (j in 1:length(pubmed)){
         uri<-paste("https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/RESTful/tmTool.cgi/Disease/",pubmed[j],"/BioC",sep="")
-        t<-getURL(uri)
+        t<-RCurl::getURL(uri)
 
         if( !is.na(pmatch('[Error]', t)) ){
           diseases<-NA
         } else {
-          ll<-xmlToList(t)
+          ll<-XML::xmlToList(t)
           list1<-ll$document[[3]]
           if (length(list1)>3){
             d<-c()
@@ -58,7 +58,7 @@ GSEtoDisease<-function(GSE){
         #find all leafs
         leaf<-c()
         for (j in 1:length(diseases)){
-          leaf[j]<-match(tolower(diseases[j]),tolower(BioDataome:::leafs[,1]))
+          leaf[j]<-match(tolower(diseases[j]),tolower(leafs[,1]))
         }
         #if we have only one leaf keep that
         if (length(which(!is.na(leaf)))==1){
@@ -66,7 +66,7 @@ GSEtoDisease<-function(GSE){
         } else if (length(which(!is.na(leaf)))>1){
           #if we have more than one leafs find parent categories of all entiites
           #and keep the leaf that belongs to the most common category
-          aa<-BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
+          aa<-diseaseSubCategoryALLU[match(tolower(diseases),tolower(diseaseSubCategoryALLU[,1])),4]
           commonCategory<-names(table(aa)[which(table(aa)==max(table(aa)))])
           leafCats<-aa[which(!is.na(leaf))]
           #which leafs belong to the most common category
@@ -82,7 +82,7 @@ GSEtoDisease<-function(GSE){
           #find deepest nodes
           depth<-c()
           for (j in 1:length(diseases)){
-            depth[j]<-as.numeric(BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases[j]),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),3 ] )
+            depth[j]<-as.numeric(diseaseSubCategoryALLU[match(tolower(diseases[j]),tolower(diseaseSubCategoryALLU[,1])),3 ] )
           }
           #if we have more than one category with the same depth, keep the most representative as in leafs
 
@@ -92,11 +92,11 @@ GSEtoDisease<-function(GSE){
           } else if (length(bb)==1){
             diseases<-diseases[which(depth==max(depth,na.rm = T))]
           } else {
-            aa<-BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
+            aa<-diseaseSubCategoryALLU[match(tolower(diseases),tolower(diseaseSubCategoryALLU[,1])),4]
             commonCategory<-names(table(aa)[which(table(aa)==max(table(aa)))])
             nodesToKeep<-which(aa[bb] %in% commonCategory)
             if (length(nodesToKeep)==0){
-              diseasesALL[i]<-paste(diseases[bb], sep=";", collapse=";")
+              diseases<-paste(diseases[bb], sep=";", collapse=";")
             } else {
               diseases<-paste(diseases[bb[nodesToKeep]], sep=";", collapse=";")
             }

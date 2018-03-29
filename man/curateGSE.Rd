@@ -12,6 +12,8 @@ curateGSE(x, y, z = getwd(), keepRaw = FALSE)
 \item{y}{a GEO technology id (GPL)}
 
 \item{z}{the path to save the downloaded files. By default this value is set to the working directory.}
+
+\item{keepRaw}{keep or not the raw CEL files. By default curateGSE does not keep the raw CEL files.}
 }
 \value{
 a list with three components:
@@ -24,5 +26,6 @@ a list with three components:
 Given a GSE id this function downloads, preprocesses, annotates a study and also creates the sample phenotype metadata.
 }
 \examples{
-curateGSE("GSE11761","GPL570",getwd())
+\dontrun{
+curateGSE("GSE11761","GPL570",getwd()) }
 }

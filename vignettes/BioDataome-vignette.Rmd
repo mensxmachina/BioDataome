@@ -29,7 +29,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   cache=TRUE,
-  warning=FALSE, message=FALSE
+  warning=FALSE, message=FALSE,
+  eval = FALSE
 )
 ```
 
@@ -76,7 +77,7 @@ In [BioDataome](http://dataome.mensxmachina.org/) users may select certain crite
 
 #If you have installed and loaded BioDataome package, an example metadata file can be loaded as:
 metadata<-BioDataome::metadata
-#Let's filter out further the results by selecting datasets with sample size greater or equal to 25 and those with no common samples with any other dataset.
+#Let's filter out further the results by selecting datasets with sample size greater or equal to 25 and #those with no common samples with any other dataset.
 subsetDsets<-metadata[which( (metadata$samples>=25) & (metadata$duplicates==" ") ),]
 dataList<-lapply(subsetDsets$dataset,read.csv)
 
@@ -92,7 +93,7 @@ In [BioDataome](http://dataome.mensxmachina.org/) we have downloaded, preprocess
 
 In BioDataome package `curateGSE` function runs all necessary steps to download and preprocess a dataset from GEO. It returns a list, the first element of which is the sample phenotype metadata and the second the preprocessed data. `curateGSE` function is build upon several other BioDataome functions. First, it calls `GSEmetadata` for creating the sample phenotype metadata, including the output of the `controlSamples`, which discovers which samples are possibly used as controls, and then calls `downloadRaw` to download all raw data. Subsequently, depending on the user specified techology (whether the user designated one of the gene expression technologies curated by BioDataome or the methylation technology) `curateGSE` calls `preprocessGEO` or `preprocessGEOMethylation` respectively, to create a numeric matrix of the preprocessed data. Keep in mind that preprocessing CEL files takes a long time, even for small datasets. 
 
-```{r curateMA, warning=FALSE, message=FALSE}
+```{r curateMA,warning=FALSE, message=FALSE}
 #curate dataset GSE10026 measured with technology GPL570.
 
 GSE10026<-curateGSE("GSE10026","GPL570",getwd())
@@ -109,7 +110,7 @@ GSE10026[[2]][1:5,1:5]
 
 In BioDataome package `curateRecountRNASeq` function runs all necessary steps to download and preprocess a dataset from recount. It returns a list, the first element of which is the sample phenotype metadata and the second the preprocessed data. 
 
-```{r curateRNASeq,warning=FALSE, message=FALSE}
+```{r curateRNASeq, warning=FALSE, message=FALSE}
 #curate dataset SRP032775.
 
 SRP032775<-curateRecountRNASeq("SRP032775",getwd())
@@ -265,11 +266,11 @@ source("https://bioconductor.org/biocLite.R")
 if (!require("limma")) biocLite("limma")
 library('limma')
 
-#Fit a linear model for each gene in the expression data given the design matrix specified in column class of the phenotype data
+#Fit a linear model for each gene in the expression data given the design matrix specified in column class #of the phenotype data
 fit <- lmFit(d, design=model.matrix(~ pheno$class))
 #calculate the differential expression by empirical Bayes shrinkage
 fit <- eBayes(fit)
-#A table with the top 10 most statistically significant differentially expressed genes between the groups sorted by adjusted p-value:
+#A table with the top 10 most statistically significant differentially expressed genes between the groups #sorted by adjusted p-value:
 tt <- topTable(fit, coef=2)
 
 #create a heatmap of those top 10 highly significant genes. 

@@ -14,12 +14,14 @@ a matrix of dimensions: probes x samples with the normalized methylation values
 }
 \description{
 This function utilizes minfi Package to convert data into methylation measurements.
+Example: Assuming there is a directory named GSE78279 in the working
+directory where idat files are stored and "GSM2071074_8655685078_R03C02"
+and "GSM2071074_8655685078_R03C02" are the file names for the idat files,
+then x should be:
 }
 \examples{
-Assuming there is a directory named GSE78279 in the working directory where idat files are stored and
-"GSM2071074_8655685078_R03C02" and "GSM2071074_8655685078_R03C02" are the file names for the idat files,
-then x should be:
+\dontrun{
 x<-c("GSM2071074_8655685078_R03C02","GSM2071075_8655685078_R04C02")
 x<-file.path(getwd(),"GSE78279",x)
-dataNorm<-preprocessGEOMethylation(x)
+dataNorm<-preprocessGEOMethylation(x) }
 }

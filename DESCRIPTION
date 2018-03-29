@@ -5,8 +5,8 @@ Authors@R: person("Kleanthi", "Lakiotaki", email = "kliolak@gmail.com", role = c
 Author: Kleanthi Lakiotaki [aut, cre]
 Maintainer: Kleanthi Lakiotaki <kliolak@gmail.com>
 Description: BioDataome package contains all the functions used to download, preprocess and annotate gene expression and methylation microarray data from Gene Expression Omnibus, as well as RNASeq data from recount.
-Depends: R (>= 3.4.2), foreach, SCAN.UPC,DESeq2,SummarizedExperiment,minfi,recount
-Imports: GEOquery, Biobase, RCurl, Rfast, SCAN.UPC, XML, doParallel, parallel, rentrez
+Depends: R (>= 3.4.2)
+Imports: GEOquery, Biobase, RCurl, Rfast, XML, doParallel, parallel, rentrez, data.table, foreach, SCAN.UPC,DESeq2,SummarizedExperiment,minfi,recount
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

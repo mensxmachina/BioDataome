@@ -6,14 +6,14 @@
 #' @param y a GEO platform id (GPL)
 #' @return a data frame of metadata with columns: sample IDs, Class and all other GEO phenotype data found in series matrix
 
-#' @examples
-#' metadata<-GSEmetadata("GSE11761","GPL570")
+#' @examples \dontrun{
+#' metadata<-GSEmetadata("GSE11761","GPL570") }
 #' @export
 
 GSEmetadata<-function(x,y){
 
   #platforms currenty curated in BioDataome
-  platforms<-BioDataome:::platformInfo$Technology
+  platforms<-platformInfo$Technology
 
   if (missing(x))
     stop("Need to specify a GEO Series id, i.e 'GSE10026'")

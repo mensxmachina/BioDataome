@@ -18,5 +18,6 @@ writes in the given path two data frames, the preprocessed data and the metadata
 Run all steps to download, preprocess and annotate an RNASeq dataset from Recount
 }
 \examples{
-curatedRecount<-curateRecountRNASeq("SRP032775",getwd())
+\dontrun{
+curatedRecount<-curateRecountRNASeq("SRP032775",getwd()) }
 }

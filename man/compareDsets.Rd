@@ -4,7 +4,8 @@
 \alias{compareDsets}
 \title{Column wise comparison of two datasets
 This function finds how many samples are shared between two datasets. The datasets are in the form
-variables (probes) x samples. The number of variables (probes) in both datasets should be the same}
+variables (probes) x samples. The number of variables (probes) in both datasets should be the same
+Let us assume we want to compare two normalized gene expression datasets from the same platform}
 \usage{
 compareDsets(d1, d2)
 }
@@ -20,10 +21,12 @@ the number of equal samples
 Column wise comparison of two datasets
 This function finds how many samples are shared between two datasets. The datasets are in the form
 variables (probes) x samples. The number of variables (probes) in both datasets should be the same
+Let us assume we want to compare two normalized gene expression datasets from the same platform
 }
 \examples{
-Let us assume we want to compare two normalized gene expression datasets from the same platform
+\dontrun{
 d1<-get(load(url("http://dataome.mensxmachina.org/data/Homo\%20sapiens/GPL570/GSE86013.Rda")))
 d2<-get(load(url("http://dataome.mensxmachina.org/data/Homo\%20sapiens/GPL570/GSE86015.Rda")))
-commons<-compareDsets(d1,d2)
+commons<-compareDsets(d1,d2) }
+
 }

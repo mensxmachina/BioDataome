@@ -16,5 +16,6 @@ the parent node of x disease
 This function uses internal look up data to map a disease to its parent node.
 }
 \examples{
-DOParent<-diseasetoParentNodes("vesiculitis")
+\dontrun{
+DOParent<-diseasetoParentNodes("vesiculitis") }
 }

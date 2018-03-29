@@ -16,5 +16,6 @@ a GSE series ID
 Map a recount dataset ID to GSE ID
 }
 \examples{
-recountIDtoGSE("SRP032775")
+\dontrun{
+recountIDtoGSE("SRP032775") }
 }

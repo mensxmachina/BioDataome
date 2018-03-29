@@ -4,12 +4,12 @@
 #'
 #' @param x a disease in D-O terms
 #' @return the parent node of x disease
-#' @examples
-#' DOParent<-diseasetoParentNodes("vesiculitis")
+#' @examples \dontrun{
+#' DOParent<-diseasetoParentNodes("vesiculitis") }
 #' @export
 
 diseasetoParentNodes<-function(x){
-  DOParent<-BioDataome:::diseaseCategoryALLU[match(tolower(x),tolower(BioDataome:::diseaseCategoryALLU[,1])),4]
+  DOParent<-diseaseCategoryALLU[match(tolower(x),tolower(diseaseCategoryALLU[,1])),4]
   return(DOParent)
 }
 

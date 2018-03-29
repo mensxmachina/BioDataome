@@ -18,5 +18,6 @@ http://disease-ontology.org/
 It provides the most specific disease term, meaning the term with the highest depth in the D-O.
 }
 \examples{
-diseases<-GSEtoDisease("GSE10245")
+\dontrun{
+diseases<-GSEtoDisease("GSE10245") }
 }

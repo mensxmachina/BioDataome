@@ -2,8 +2,8 @@
 #'
 #' @param x a recount dataset ID
 #' @return a GSE series ID
-#' @examples
-#' recountIDtoGSE("SRP032775")
+#' @examples \dontrun{
+#' recountIDtoGSE("SRP032775") }
 #' @export
 #' @importFrom rentrez entrez_search
 #' @importFrom RCurl getURL

@@ -5,14 +5,14 @@
 #' @param x a GEO Series id (GSE)
 #' @param y a GEO platform id (GPL)
 #' @return a data frame with the contents of the series matrix found in GEO
-#' @examples
-#' downloadPhenotypePlatform("GSE11761","GPL570")
+#' @examples \dontrun{
+#' downloadPhenotypePlatform("GSE11761","GPL570") }
 #' @export
 #' @importFrom Biobase pData
 
 downloadPhenotypePlatform<-function(x,y){
   #platforms currenty curated in BioDataome
-  platforms<-BioDataome:::platformInfo$Technology
+  platforms<-platformInfo$Technology
 
   if (missing(x))
     stop("Need to specify a GEO Series id, i.e 'GSE10026'")

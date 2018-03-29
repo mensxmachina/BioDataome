@@ -6,8 +6,8 @@
 #'
 #' @param GSE a GSE series ID
 #' @return a character vector of all related diseases, separated by ;
-#' @examples
-#' diseases<-GSEtoDiseaseGEO("GSE10245")
+#' @examples \dontrun{
+#' diseases<-GSEtoDiseaseGEO("GSE10245") }
 #' @export
 
 GSEtoDiseaseGEO<-function(GSE){
@@ -17,7 +17,7 @@ GSEtoDiseaseGEO<-function(GSE){
     stop("GSE must be a GEO Series id, i.e 'GSE10026'")
 
   #unlist all gses per disease
-  tt<-strsplit(BioDataome:::diseasesLevel$GSEs,";")
+  tt<-strsplit(diseasesLevel$GSEs,";")
   #isolate numerical part of GSE code
   gse<-strsplit(GSE,"GSE")
   gse<-unlist(gse)[[2]]
@@ -26,29 +26,29 @@ GSEtoDiseaseGEO<-function(GSE){
   d<-which(!(is.na(c)))
   #if this GSE is found
   if (length(d)>0){
-    diseases<-BioDataome:::diseasesLevel[d,1]
+    diseases<-diseasesLevel[d,1]
     #remove "disease" which causes NAs
     diseases<-diseases[which(diseases!="disease")]
     if (length(diseases)>0){
       #find all leafs
       leaf<-c()
       for (j in 1:length(diseases)){
-        leaf[j]<-match(tolower(diseases[j]),tolower(BioDataome:::leafs[,1]))
+        leaf[j]<-match(tolower(diseases[j]),tolower(leafs[,1]))
       }
       #if we have only one leaf keep that
       if (length(which(!is.na(leaf)))==1){
         diseases<-diseases[which(!is.na(leaf))]
       } else if (length(which(!is.na(leaf)))>1){
-        #if we have more than one leaves find parent categories of all entiites
+        #if we have more than one leaves find parent categories of all entities
         #and keep the leaf that belongs to the most common category
-        aa<-BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
+        aa<-diseaseSubCategoryALLU[match(tolower(diseases),tolower(diseaseSubCategoryALLU[,1])),4]
         commonCategory<-names(table(aa)[which(table(aa)==max(table(aa)))])
         leafCats<-aa[which(!is.na(leaf))]
         #which leafs belong to the most common category
         leafsToKeep<-which(leafCats %in% commonCategory)
         #if no leaf belongs to the common category keep them all
         if (length(leafsToKeep)==0){
-          diseases[i]<-paste(diseases[which(!is.na(leaf))], sep=";", collapse=";")
+          diseases<-paste(diseases[which(!is.na(leaf))], sep=";", collapse=";")
         } else {
           diseases<-paste(diseases[leafsToKeep], sep=";", collapse=";")
         }
@@ -57,7 +57,7 @@ GSEtoDiseaseGEO<-function(GSE){
         #find deepest nodes
         depth<-c()
         for (j in 1:length(diseases)){
-          depth[j]<-as.numeric(BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases[j]),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),3 ] )
+          depth[j]<-as.numeric(diseaseSubCategoryALLU[match(tolower(diseases[j]),tolower(diseaseSubCategoryALLU[,1])),3 ] )
         }
         #if we have more than one category with the same depth, keep the most representative as in leafs
 
@@ -66,7 +66,7 @@ GSEtoDiseaseGEO<-function(GSE){
         if (length(bb)==1){
           diseases<-diseases[which(depth==max(depth,na.rm = T))]
         } else if (length(bb)>1){
-          aa<-BioDataome:::diseaseSubCategoryALLU[match(tolower(diseases),tolower(BioDataome:::diseaseSubCategoryALLU[,1])),4]
+          aa<-diseaseSubCategoryALLU[match(tolower(diseases),tolower(diseaseSubCategoryALLU[,1])),4]
           commonCategory<-names(table(aa)[which(table(aa)==max(table(aa)))])
           nodesToKeep<-which(aa[bb] %in% commonCategory)
           if (length(nodesToKeep)==0){

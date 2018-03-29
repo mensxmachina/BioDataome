@@ -6,9 +6,9 @@
 #'
 #' @param d a data frame with the contents of series matrix
 #' @return a data frame of GEO sample ids (i.e. GSM60555) and their class.
-#' @examples
+#' @examples \dontrun{
 #' phenos<-downloadPhenotypePlatform("GSE11761","GPL570")
-#' controls<-controlSamples(phenos)
+#' controls<-controlSamples(phenos) }
 #' @export
 
 

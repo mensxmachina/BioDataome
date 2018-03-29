@@ -18,5 +18,6 @@ a data frame with the contents of the series matrix found in GEO
 This function downloads returns the series matrix related to a given GEO Series (GSE)
 }
 \examples{
-downloadPhenotypePlatform("GSE11761","GPL570")
+\dontrun{
+downloadPhenotypePlatform("GSE11761","GPL570") }
 }

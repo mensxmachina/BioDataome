@@ -7,8 +7,8 @@
 #'
 #' @param x a GEO Series id (GSE)
 #' @return a list of series matrices related to the given study
-#' @examples
-#' downloadPhenotype("GSE11761")
+#' @examples \dontrun{
+#' downloadPhenotype("GSE11761") }
 #' @export
 #' @importFrom GEOquery getGEO
 

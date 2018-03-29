@@ -8,8 +8,6 @@ downloadRecount(x)
 }
 \arguments{
 \item{x}{a recount dataset ID}
-
-\item{y}{the destination path for the downloaded RangedSummarizedExperiment object}
 }
 \value{
 RangedSummarizedExperiment object for the given study
@@ -19,5 +17,6 @@ This function downloads the RangedSummarizedExperiment object with the data summ
 from Recount (https://jhubiostatistics.shinyapps.io/recount/)
 }
 \examples{
-downloadRecount("SRP032775",getwd())
+\dontrun{
+downloadRecount("SRP032775",getwd()) }
 }
