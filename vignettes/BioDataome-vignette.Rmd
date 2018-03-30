@@ -11,8 +11,7 @@ abstract: >
   This vignette provides a task-oriented description of BioDataome package, examples of user interaction with BioDataome and some examples of analysing BioDataome datasets. [BioDataome](http://dataome.mensxmachina.org/) is a collection of uniformly preprocessed and automatically annotated datasets for data-driven biology. The processed data can be accessed via the [BioDataome](http://dataome.mensxmachina.org/) website in .csv format and the BioDataome package via github. BioDataome package contains all the functions used to download, preprocess and annotate gene expression and methylation microarray data from Gene Expression Omnibus, as well as RNASeq data from [recount](https://jhubiostatistics.shinyapps.io/recount/).
 toc: true
 output:
-  BiocStyle::html_document2:
-    toc_float: true
+  BiocStyle::pdf_document
 vignette: >
   %\VignetteIndexEntry{Download, preprocess, annotate and analyze omics data sets}
   %\VignetteEngine{knitr::rmarkdown}
