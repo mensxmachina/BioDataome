@@ -1,10 +1,6 @@
 Package: BioDataome
 Title: Functions used to preprocess datasets stored in BioDataome
-<<<<<<< HEAD
 Version: 0.99.2
-=======
-Version: 0.99.1
->>>>>>> 939764bdc430fbb6bf135ce1060c88e3e48fc727
 Authors@R: person("Kleanthi", "Lakiotaki", email = "kliolak@gmail.com", role = c("aut", "cre"))
 Author: Kleanthi Lakiotaki [aut, cre]
 Maintainer: Kleanthi Lakiotaki <kliolak@gmail.com>
