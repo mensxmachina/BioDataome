@@ -9,7 +9,7 @@
 #' @return a list of series matrices related to the given study
 #' @examples \dontrun{
 #' downloadPhenotype("GSE11761") }
-#' p<- BioDataome:::phenotype
+#' p<- BioDataome:::phenos
 #' @export
 #' @importFrom GEOquery getGEO
 
