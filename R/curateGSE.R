@@ -13,6 +13,7 @@
 #' }
 #' @examples \dontrun{
 #' curateGSE("GSE11761","GPL570",getwd()) }
+#' curatedGSE<-list(metadata=BioDataome:::meta11761,dataNorm=BioDataome:::GSE11761)
 #' @importFrom GEOquery gunzip
 #' @importFrom utils untar
 #' @export

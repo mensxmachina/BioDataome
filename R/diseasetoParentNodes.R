@@ -4,8 +4,8 @@
 #'
 #' @param x a disease in D-O terms
 #' @return the parent node of x disease
-#' @examples \dontrun{
-#' DOParent<-diseasetoParentNodes("vesiculitis") }
+#' @examples
+#' DOParent<-diseasetoParentNodes("vesiculitis")
 #' @export
 
 diseasetoParentNodes<-function(x){

@@ -24,9 +24,8 @@ variables (probes) x samples. The number of variables (probes) in both datasets 
 Let us assume we want to compare two normalized gene expression datasets from the same platform
 }
 \examples{
-\dontrun{
 d1<-get(load(url("http://dataome.mensxmachina.org/data/Homo\%20sapiens/GPL570/GSE86013.Rda")))
 d2<-get(load(url("http://dataome.mensxmachina.org/data/Homo\%20sapiens/GPL570/GSE86015.Rda")))
-commons<-compareDsets(d1,d2) }
+commons<-compareDsets(d1,d2)
 
 }

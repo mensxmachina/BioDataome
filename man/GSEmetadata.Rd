@@ -21,4 +21,5 @@ and returns all sample phenotype metadata
 \examples{
 \dontrun{
 metadata<-GSEmetadata("GSE11761","GPL570") }
+metadata<-BioDataome:::phenos
 }

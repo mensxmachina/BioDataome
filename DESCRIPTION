@@ -1,6 +1,6 @@
 Package: BioDataome
 Title: Functions used to preprocess datasets stored in BioDataome
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: person("Kleanthi", "Lakiotaki", email = "kliolak@gmail.com", role = c("aut", "cre"))
 Author: Kleanthi Lakiotaki [aut, cre]
 Maintainer: Kleanthi Lakiotaki <kliolak@gmail.com>
@@ -13,3 +13,4 @@ LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 Suggests: BiocStyle, knitr, rmarkdown
+biocViews: GeneExpression, RNASeq, Microarray, Sequencing, DNAMethylation, Normalization, Preprocessing, Annotation, Software, DataImport

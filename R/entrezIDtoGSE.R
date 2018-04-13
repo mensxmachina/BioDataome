@@ -4,10 +4,11 @@
 #'
 #' @param x an esearch object as a result of an entrez_search query
 #' @return a matrix the first column of which is the GSE id and the second the entrezID
-#' @examples \dontrun{
-#' r_search <- entrez_search(db="gds", term="Homo sapiens[ORGN]
+#' @examples
+#' r_search <- rentrez::entrez_search(db="gds", term="Homo sapiens[ORGN]
 #' AND CEL[SFIL] AND gpl570[ACCN] AND 200:300[Number of Samples]",
 #' retmax =10000, use_history=TRUE)
+#' \dontrun{
 #' entrezIDtoGSE(r_search) }
 #'
 #' @export

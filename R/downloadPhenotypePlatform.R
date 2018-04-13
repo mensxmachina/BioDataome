@@ -7,6 +7,7 @@
 #' @return a data frame with the contents of the series matrix found in GEO
 #' @examples \dontrun{
 #' downloadPhenotypePlatform("GSE11761","GPL570") }
+#' p<-BioDataome:::phenoPlatform
 #' @export
 #' @importFrom Biobase pData
 

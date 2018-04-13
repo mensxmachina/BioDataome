@@ -6,8 +6,8 @@
 #'
 #' @param GSE a GSE series ID
 #' @return a character vector of all related diseases, separated by ;
-#' @examples \dontrun{
-#' diseases<-GSEtoDiseaseGEO("GSE10245") }
+#' @examples
+#' diseases<-GSEtoDiseaseGEO("GSE10245")
 #' @export
 
 GSEtoDiseaseGEO<-function(GSE){

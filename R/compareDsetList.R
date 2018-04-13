@@ -11,13 +11,11 @@
 #' @param x the path to a normalized dataset x
 #' @param y a character vector of all paths to datasets to compare
 #' @return a character vector of all datasets for which dataset x shares at least one sample, separated by ;
-#' @examples \dontrun{
-#' install.packages("data.table")
-#' library("data.table")
+#' @examples
 #' x<-"http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86013.csv"
 #' y<-c("GSE86015.csv","GSE9008.csv","GSE9119.csv")
 #' y<-paste0("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/",y)
-#' commonGSEs<-compareDsetList(x,y) }
+#' commonGSEs<-compareDsetList(x,y)
 #' @importFrom data.table fread
 #' @export
 

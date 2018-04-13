@@ -24,4 +24,5 @@ then x should be:
 x<-c("GSM2071074_8655685078_R03C02","GSM2071075_8655685078_R04C02")
 x<-file.path(getwd(),"GSE78279",x)
 dataNorm<-preprocessGEOMethylation(x) }
+meth<-data
 }

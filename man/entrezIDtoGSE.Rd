@@ -20,10 +20,10 @@ Example: query GEO for all Homo sapiens studies with sample size
 between 200-300, measured with GPL570 and provide CEL files
 }
 \examples{
-\dontrun{
-r_search <- entrez_search(db="gds", term="Homo sapiens[ORGN]
+r_search <- rentrez::entrez_search(db="gds", term="Homo sapiens[ORGN]
 AND CEL[SFIL] AND gpl570[ACCN] AND 200:300[Number of Samples]",
 retmax =10000, use_history=TRUE)
+\dontrun{
 entrezIDtoGSE(r_search) }
 
 }

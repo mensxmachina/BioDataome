@@ -6,10 +6,10 @@
 #' @param d1 a numeric matrix of a dataset
 #' @param d2 a numeric matrix of a dataset
 #' @return the number of equal samples
-#' @examples \dontrun{
+#' @examples
 #' d1<-get(load(url("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86013.Rda")))
 #' d2<-get(load(url("http://dataome.mensxmachina.org/data/Homo%20sapiens/GPL570/GSE86015.Rda")))
-#' commons<-compareDsets(d1,d2) }
+#' commons<-compareDsets(d1,d2)
 #'
 #' @export
 #' @importFrom Rfast mat.mat

@@ -28,4 +28,5 @@ Given a GSE id this function downloads, preprocesses, annotates a study and also
 \examples{
 \dontrun{
 curateGSE("GSE11761","GPL570",getwd()) }
+curatedGSE<-list(metadata=BioDataome:::meta11761,dataNorm=BioDataome:::GSE11761)
 }

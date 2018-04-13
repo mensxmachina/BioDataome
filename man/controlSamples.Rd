@@ -19,6 +19,6 @@ series matrices.
 }
 \examples{
 \dontrun{
-phenos<-downloadPhenotypePlatform("GSE11761","GPL570")
-controls<-controlSamples(phenos) }
+phenos<-downloadPhenotypePlatform("GSE11761","GPL570")}
+controls<-controlSamples(BioDataome:::phenos)
 }

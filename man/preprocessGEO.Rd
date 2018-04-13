@@ -23,4 +23,5 @@ Example: Assuming that CEL files are located in working directory
 \examples{
 \dontrun{
 preprocessGEO(getwd(),3) }
+normCELs<-BioDataome:::normalized
 }

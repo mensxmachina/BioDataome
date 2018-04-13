@@ -24,11 +24,8 @@ First example runs with datasets stored in .csv in BioDataome.
 Since these datasets are large we propose to use fread from package data.table to read datasets faster
 }
 \examples{
-\dontrun{
-install.packages("data.table")
-library("data.table")
 x<-"http://dataome.mensxmachina.org/data/Homo\%20sapiens/GPL570/GSE86013.csv"
 y<-c("GSE86015.csv","GSE9008.csv","GSE9119.csv")
 y<-paste0("http://dataome.mensxmachina.org/data/Homo\%20sapiens/GPL570/",y)
-commonGSEs<-compareDsetList(x,y) }
+commonGSEs<-compareDsetList(x,y)
 }

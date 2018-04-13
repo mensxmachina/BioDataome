@@ -18,5 +18,6 @@ from Recount (https://jhubiostatistics.shinyapps.io/recount/)
 }
 \examples{
 \dontrun{
-downloadRecount("SRP032775",getwd()) }
+downloadRecount("SRP032775") }
+recount<-BioDataome:::recountData
 }

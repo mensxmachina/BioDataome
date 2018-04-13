@@ -20,4 +20,5 @@ This function downloads returns the series matrix related to a given GEO Series 
 \examples{
 \dontrun{
 downloadPhenotypePlatform("GSE11761","GPL570") }
+p<-BioDataome:::phenoPlatform
 }

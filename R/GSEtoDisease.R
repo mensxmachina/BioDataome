@@ -6,8 +6,8 @@
 #'
 #' @param GSE a GSE series ID
 #' @return a character vector of all related diseases, separated by ;
-#' @examples \dontrun{
-#' diseases<-GSEtoDisease("GSE10245") }
+#' @examples
+#' diseases<-GSEtoDisease("GSE10245")
 #' @export
 #' @importFrom rentrez entrez_search
 #' @importFrom RCurl getURL

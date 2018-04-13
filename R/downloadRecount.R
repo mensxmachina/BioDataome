@@ -6,7 +6,8 @@
 #' @param x a recount dataset ID
 #' @return RangedSummarizedExperiment object for the given study
 #' @examples \dontrun{
-#' downloadRecount("SRP032775",getwd()) }
+#' downloadRecount("SRP032775") }
+#' recount<-BioDataome:::recountData
 #' @export
 #' @importFrom recount download_study
 

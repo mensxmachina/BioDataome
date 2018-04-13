@@ -10,6 +10,7 @@
 #' @return a matrix of dimensions: probes x samples with the normalized expression values
 #' @examples \dontrun{
 #' preprocessGEO(getwd(),3) }
+#' normCELs<-BioDataome:::normalized
 #' @export
 #' @importFrom SCAN.UPC SCAN
 #' @importFrom foreach %dopar%

@@ -16,6 +16,5 @@ the first children node of x disease
 This function uses internal look up data to map a disease to its first children node.
 }
 \examples{
-\dontrun{
-DOChild<-diseasetoChildrenNodes("vesiculitis") }
+DOChild<-diseasetoChildrenNodes("vesiculitis")
 }

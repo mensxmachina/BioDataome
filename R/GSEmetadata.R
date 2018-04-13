@@ -8,6 +8,7 @@
 
 #' @examples \dontrun{
 #' metadata<-GSEmetadata("GSE11761","GPL570") }
+#' metadata<-BioDataome:::phenos
 #' @export
 
 GSEmetadata<-function(x,y){
