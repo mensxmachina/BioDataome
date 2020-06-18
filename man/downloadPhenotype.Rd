@@ -21,5 +21,5 @@ The length of the output list is the number of the related platforms.
 \examples{
 \dontrun{
 downloadPhenotype("GSE11761") }
-p<- BioDataome:::phenotype
+p<- BioDataome:::phenos
 }

@@ -34,16 +34,29 @@ curateGSE<-function(x,y,z=getwd(), keepRaw=FALSE){
   #download and curate phenotype metadata
   metadata<-GSEmetadata(x,y)
   #download raw files
-  downloadRaw(x,z)
+  downloadRaw(x,z)   ##<--- GEO DownLoad
+
   utils::untar(file.path(z,x,paste0(x,"_RAW.tar")), exdir = file.path(z,x))
+
   #remove compressed file
+
   file.remove(file.path(z,x,paste0(x,"_RAW.tar")))
+
   #by default downloadRaw will download all files for the specific GSE
 
   #if the user specified GPL13534 with is the Illumina HumanMethylation450 BeadChip
   #list and preprocess idat files. Else list and preprocess CEL files
+  if (y == "GPL18058"){
 
-  if (y=="GPL13534"){
+    gprfiles <- list.files(file.path(z,x), pattern = ".gpr",ignore.case = T)
+    gprsKeep<-gprfiles[startsWith(gprfiles,as.character(metadata$samples))]
+    #remove the rest
+    toRemove<-setdiff(gprfiles,gprsKeep)
+    file.remove(file.path(z,x,toRemove))
+
+    dataNorm<-preprocessGEO(file.path(z,x),3)  #### Not appropriate normalization function
+
+  } else if (y=="GPL13534"){
     idatFiles <- list.files(file.path(z,x), pattern = "idat.gz$", full.names = TRUE)
     sapply(idatFiles, GEOquery::gunzip, overwrite = TRUE)
     idatFiles2 <- list.files(file.path(z,x), pattern = "idat$",include.dirs = FALSE)
@@ -71,7 +84,7 @@ curateGSE<-function(x,y,z=getwd(), keepRaw=FALSE){
     basenames<-unique(unlist(strsplit(basenames, "_Red.idat")))
 
     basenames<-file.path(file.path(z,x), basenames)
-    dataNorm<-preprocessGEOMethylation(x)
+    dataNorm<-preprocessGEOMethylation(basenames)
 
   } else {
 

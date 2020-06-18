@@ -12,19 +12,20 @@
 #' preprocessGEO(getwd(),3) }
 #' normCELs<-BioDataome:::normalized
 #' @export
-#' @importFrom SCAN.UPC SCAN
 #' @importFrom foreach %dopar%
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom Biobase exprs
+#' @importFrom SCAN.UPC SCAN
 
 preprocessGEO<-function(x,y){
   #get current directory to return after normalization
+
   currentPath<-getwd()
   setwd(x)
   cl <- parallel::makeCluster(y)
   doParallel::registerDoParallel(cl)
-  normalized =SCAN.UPC::SCAN( "*.CEL.gz")
+  normalized = SCAN.UPC::SCAN( "*.CEL.gz")
   parallel::stopCluster(cl)
   normalized<-Biobase::exprs(normalized)
   setwd(currentPath)

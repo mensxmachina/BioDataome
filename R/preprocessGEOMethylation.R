@@ -15,10 +15,13 @@
 #' meth<-data
 #' @export
 #' @importFrom minfi read.metharray mapToGenome getBeta
+#' @import IlluminaHumanMethylation450kmanifest
+#' @import IlluminaHumanMethylation450kanno.ilmn12.hg19
+#' @import minfi
 
 preprocessGEOMethylation<-function(x){
   #get current directory to return after normalization
-  rgset <- minfi::read.metharray(x, verbose = TRUE)
+  rgset <- minfi::read.metharray(x, verbose = TRUE, force = FALSE)
   mset <- minfi::preprocessIllumina(rgset,bg.correct=T)
   mset <- minfi::mapToGenome(mset)
   dataNorm<-minfi::getBeta(mset, type = "Illumina")

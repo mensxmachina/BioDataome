@@ -20,6 +20,7 @@
 #' @export
 
 compareDsetList<-function(x,y){
+
   if (length(grep("http",x))!=0) {
     d1<-data.table::fread(x, sep=",", header=T,stringsAsFactors=FALSE)
     d1<-t(d1[,2:ncol(d1)])
@@ -27,6 +28,7 @@ compareDsetList<-function(x,y){
     d1<-get(load(x))
   }
   t<-c()
+  o <- 1
   for (i in 1:length(y)){
     if (length(grep("http",y[i]))!=0) {
       d2<-data.table::fread(y[i], sep=",", header=T,stringsAsFactors=FALSE)
@@ -34,7 +36,12 @@ compareDsetList<-function(x,y){
     } else {
       d2<-get(load(y[i]))
     }
-    t[i]<-compareDsets(d1,d2)
+    #--------
+    if (dim(d2)[1] == dim(d1)[1]){
+      t[o]<-compareDsets(d1,d2)
+      o <- o + 1
+    }
+    #--------
   }
   #which dsets have common samples with x
   dsets<-basename(y[which(t!=0)])
