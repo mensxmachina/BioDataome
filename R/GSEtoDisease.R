@@ -13,6 +13,7 @@
 #' @importFrom RCurl getURL
 #' @importFrom XML xmlToList
 #' @importFrom pubmed.mineR pubtator_function
+#' @importFrom httr GET stop_for_status content
 
 GSEtoDisease<-function(GSE){
   ### Intergrate Local PubTator
@@ -71,7 +72,7 @@ GSEtoDisease<-function(GSE){
 
         ###### ---- Error Test ---------- #######
 
-        require(httr)
+        #require(httr)
         req <- GET(uri)
         stop_for_status(req)
         t <- content(req)
