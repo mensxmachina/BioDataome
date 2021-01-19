@@ -25,7 +25,7 @@ GSEmetadata<-function(x,y){
   if (!any(grepl(y, platforms, ignore.case=TRUE)))
     stop("y must be one of the technologies: 'GPL570', 'GPL96', 'GPL6244', 'GPL1261','GPL13534'")
 
-  phenos<-downloadPhenotypePlatform(x,y)
+  phenos<-downloadPhenotypePlatform(x,y) ### Throw Exception NCBI was busy try again
   if (!is.na(phenos)){
     samples<-row.names(phenos)
     controls<-controlSamples(phenos)

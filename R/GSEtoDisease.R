@@ -38,28 +38,69 @@ GSEtoDisease<-function(GSE){
 
       #use PubTator's API to annotate gse
       diseases<-c()
+
       for (j in 1:length(pubmed)){
         #uri<-paste("https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/RESTful/tmTool.cgi/Disease/",pubmed[j],"/BioC",sep="") ### Error
         #uri<-paste("https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/RESTful/tmTool.cgi/BioConcept/",pubmed[j],"/PubTator",sep="")
-        uri<-paste("https://www.ncbi.nlm.nih.gov/research/pubtator-api/publications/export/pubtator?pmids=",pubmed[j],"&concepts=disease")
-        t<-RCurl::getURL(uri)
+        uri<-paste0("https://www.ncbi.nlm.nih.gov/research/pubtator-api/publications/export/pubtator?pmids=",pubmed[j],"&concepts=disease")
 
-        if( !is.na(pmatch('[Error]', t)) ){
+        ###### ------ Error Tests ------ #####
 
-          diseases<-NA
+        # opt <- RCurl::curlOptions(verbose = TRUE, sslversion = CURL_SSLVERSION_TLSv1_2)
+        #
+        # RCurl::getURL(uri, .opts = opt)
+        #
+        # uri <- "https://www.ncbi.nlm.nih.gov/research/pubtator-api/publications/export/pubtator?pmids=28483577&concepts=disease"
+        # uri <- "https://www.ncbi.nlm.nih.gov/research/pubtator-api/publications/export/biocxml?pmcids=PMC6207735"
+        #
+        # require(RCurl)
+        # #Works, note I removed sslversion
+        # RCurl::getURL(uri, cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"), .opts=c(followLocation=T, verbose = TRUE, sslversion=6L), ssl.verifypeer = FALSE)
+        #
+        # RCurl::getURL(uri, ssl.verifypeer = F,sslversion=6L)
+        #
+        # require(rvest)
+        # t <- read_html(uri)
+        #
+        # require(curl)
+        # t <- curl(uri)
+        #
+        # require(curl)
+        # con <- curl(uri)
+        # readLines(con)
+
+        ###### ---- Error Test ---------- #######
+
+        require(httr)
+        req <- GET(uri)
+        stop_for_status(req)
+        t <- content(req)
+        diseases <- c(diseases,tolower(strsplit(t,"\t")[[1]][4]))
+
+        ### Erroniously Block
+        RCurl.attempt <- try(t <- RCurl::getURL(uri, ssl.verifypeer = F,sslversion=6L, cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl")), T)
+
+        if (!(isTRUE(class(RCurl.attempt) == "try-error"))){
+
+          if( !is.na(pmatch('[Error]', t)) ){
+
+            diseases<-NA
 
           } else {
 
-          ll <- XML::xmlToList(t)
-          list1 <- ll$document[[3]]
-          if (length(list1)>3){
-            d <- c()
-            for (k in 1:(length(list1)-3)){
-              d[k] <- list1[[k+3]]$text
+            ll <- XML::xmlToList(t)
+            list1 <- ll$document[[3]]
+            if (length(list1)>3){
+              d <- c()
+              for (k in 1:(length(list1)-3)){
+                d[k] <- list1[[k+3]]$text
+              }
+              diseases <- c(diseases,tolower(d))
             }
-            diseases <- c(diseases,tolower(d))
-
           }
+        }
+
+        #####
 
         #------------
         #local.query <- getPubTatorQuery(pubmed[j])
@@ -68,16 +109,20 @@ GSEtoDisease<-function(GSE){
         #local.query <- unlist(local.query)
         #diseases <- c(diseases,local.query)
         #-----------
-        local.query <- pubtator_function(pubmed[j])
-        if (local.query !=" No Data ") {
-          local.query <- local.query$Diseases
-          if (!is.null(local.query)){
-            local.query <- strsplit(local.query,split='>', fixed=TRUE)
-            local.query <- lapply(local.query, function(x) tolower(x[1]))
-            diseases <- c(diseases, unlist(local.query))
+
+        pubtator.attemp <- try(local.query <- pubtator_function(pubmed[j]), T)
+
+        if (!(isTRUE(class(pubtator.attemp)=='try-error'))){
+          if (local.query !=" No Data ") {
+            local.query <- local.query$Diseases
+            if (!is.null(local.query)){
+              local.query <- strsplit(local.query,split='>', fixed=TRUE)
+              local.query <- lapply(local.query, function(x) tolower(x[1]))
+              diseases <- c(diseases, unlist(local.query))
             }
 
           }
+        }
         #-----------
         }
 
@@ -186,9 +231,9 @@ GSEtoDisease<-function(GSE){
       diseases<-sapply(GSE,GSEtoDiseaseGEO)
     }
 
-  } else {
-    diseases<-NA
-  }
+  # } else {
+  #   diseases<-NA
+  # }
 
   return(diseases)
 }

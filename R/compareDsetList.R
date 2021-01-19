@@ -30,11 +30,17 @@ compareDsetList<-function(x,y){
   t<-c()
   o <- 1
   for (i in 1:length(y)){
+    if (x == y[i]){
+      next
+    }
     if (length(grep("http",y[i]))!=0) {
-      d2<-data.table::fread(y[i], sep=",", header=T,stringsAsFactors=FALSE)
-      d2<-t(d2[,2:ncol(d2)])
+      prob.load <- try(d2<-data.table::fread(y[i], sep=",", header=T,stringsAsFactors=FALSE),TRUE)
+      try(d2<-t(d2[,2:ncol(d2)]),TRUE)
     } else {
-      d2<-get(load(y[i]))
+      prob.load <- try(d2<-get(load(y[i])),TRUE)
+    }
+    if (isTRUE(class(prob.load) == "try-error")){
+      next
     }
     #--------
     if (dim(d2)[1] == dim(d1)[1]){
@@ -48,6 +54,7 @@ compareDsetList<-function(x,y){
   dsets<-strsplit(dsets,"[.]")
   dsets<-sapply(dsets,"[[",1)
   dsets<-paste(dsets, sep=";",collapse=";")
+
   return(dsets)
 
 }

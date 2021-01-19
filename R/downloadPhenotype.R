@@ -20,10 +20,15 @@ downloadPhenotype <- function(x) {
     stop("x must be a GEO Series id, i.e 'GSE10026'")
   phenotype <- NULL
   a <- TRUE
-  while(a) {
-    phenotype <- try(GEOquery::getGEO(x, GSEMatrix=TRUE,getGPL=TRUE))
-    if(!inherits(phenotype,"try-error")) a <- FALSE
-    else cat("NCBI was busy, trying again\n")
+  #while(a) {
+  #  phenotype <- try(GEOquery::getGEO(x, GSEMatrix=TRUE,getGPL=TRUE))
+  #  if(!inherits(phenotype,"try-error")) a <- FALSE
+  #  else cat("NCBI was busy, trying again\n") return(NA)
+  #}
+  phenotype <- try(GEOquery::getGEO(x, GSEMatrix=TRUE,getGPL=TRUE))
+  if(inherits(phenotype,"try-error")) {
+    cat("NCBI was busy, trying again\n")
+    phenotype <- NA
   }
   return(phenotype)
 }

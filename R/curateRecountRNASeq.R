@@ -35,7 +35,7 @@ curateRecountRNASeq<-function(x,y){
   samples<-colnames(dataNorm)
   gse<-recountIDtoGSE(x)
   if(!is.na(gse)){
-    metadata<-GSEmetadata(gse,"GPL11154")
+    metadata<-GSEmetadata(gse,"GPL11154")  ### Throw Exception NCBI was busy try again
     #match samples in data matrix
     sids<-match(pheno$geo_accession,metadata$samples)
     metadata<-metadata[sids,]
