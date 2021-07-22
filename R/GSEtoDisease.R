@@ -72,7 +72,7 @@ GSEtoDisease<-function(GSE){
 
         ###### ---- Error Test ---------- #######
 
-        #require(httr)
+        require(httr)
         req <- GET(uri)
         stop_for_status(req)
         t <- content(req)
@@ -102,7 +102,6 @@ GSEtoDisease<-function(GSE){
         }
 
         #####
-
         #------------
         #local.query <- getPubTatorQuery(pubmed[j])
         #local.query <- strsplit(local.query$MENTIONS,split='|', fixed=TRUE)

@@ -12,7 +12,7 @@
 #' preprocessGEO(getwd(),3) }
 #' normCELs<-BioDataome:::normalized
 #' @export
-#' @importFrom foreach %dopar%
+#' @import foreach
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom Biobase exprs
