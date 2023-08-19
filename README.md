@@ -23,7 +23,7 @@ devtools::install_github("mensxmachina/BioDataome")
 ## Useful files
 
 Read BioDataome tutorials:
-[BioDataome vignette](http://dataome.mensxmachina.org/documentation)
+[BioDataome vignette](http://dataome.mensxmachina.org/docs)
 
 [BioDataome package help files](BioDataome.pdf)
 
